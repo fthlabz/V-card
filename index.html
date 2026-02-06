@@ -21,9 +21,7 @@
             --btn-height: 56px;
         }
 
-        /* Scrollbar Gizleme */
         ::-webkit-scrollbar { display: none; }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
         html, body {
@@ -40,7 +38,6 @@
             background-image: radial-gradient(circle at 50% 0%, #1e1e1e 0%, #000000 70%);
         }
 
-        /* YÜKLENİYOR */
         #loader {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; align-items: center; justify-content: center; flex-direction: column;
@@ -52,17 +49,15 @@
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* ANA KUTU */
         .wrapper {
             width: 100%; max-width: 420px;
             padding: 40px 24px;
             display: flex; flex-direction: column; align-items: center;
             animation: fadeIn 0.6s ease-out;
             overflow-y: auto;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
         }
 
-        /* PROFİL */
         .profile-area { text-align: center; margin-bottom: 35px; width: 100%; }
         
         .avatar-box {
@@ -80,7 +75,6 @@
             background: #222;
         }
 
-        /* Resim yüklenemezse gösterilecek stil */
         .avatar-fallback {
             display: flex; align-items: center; justify-content: center;
             width: 100%; height: 100%; background: #222; color: var(--gold);
@@ -100,7 +94,6 @@
             text-transform: uppercase; letter-spacing: 1.5px;
         }
 
-        /* BUTON GRUBU */
         .btn-group { width: 100%; display: flex; flex-direction: column; gap: 12px; }
 
         .btn {
@@ -128,7 +121,13 @@
         .btn-gold i { color: #000; margin-right: 10px; }
         .btn-gold span { font-weight: 700; font-size: 16px; }
 
-        /* TOAST BİLDİRİM */
+        /* IBAN BUTONLARI (Koyu Tema) */
+        .btn-iban {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .btn-iban i { color: var(--gold); }
+
         #toast {
             visibility: hidden; min-width: 250px; background-color: var(--gold); color: #000;
             text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 10000;
@@ -137,7 +136,6 @@
         }
         #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
-        /* QR & FOOTER */
         .bottom-area {
             margin-top: 40px; width: 100%;
             display: flex; flex-direction: column; align-items: center; gap: 20px;
@@ -153,7 +151,6 @@
         }
         .branding { font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
 
-        /* --- SETUP PANELİ --- */
         #setupPanel {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
             padding: 40px 24px; display: none;
@@ -185,7 +182,7 @@
 <body>
 
     <div id="loader"><div class="spinner"></div></div>
-    <div id="toast"><i class="fas fa-check-circle"></i> İşlem Başarılı!</div>
+    <div id="toast"><i class="fas fa-check-circle"></i> Kopyalandı!</div>
 
     <div class="wrapper" id="cardView" style="display:none;">
         
@@ -202,11 +199,6 @@
             <button onclick="downloadVCard()" class="btn btn-gold">
                 <i class="fas fa-user-plus"></i>
                 <span>Rehbere Kaydet</span>
-            </button>
-
-            <button id="btnIban" class="btn" onclick="copyIban()" style="display:none;">
-                <i class="fas fa-credit-card"></i>
-                <span>IBAN Kopyala</span>
             </button>
 
             <a id="btnCall" href="#" class="btn">
@@ -248,6 +240,17 @@
                 <i class="fas fa-location-dot"></i>
                 <span>Konum / Adres</span>
             </a>
+
+            <div id="ibanSection" style="display:none; width:100%; flex-direction:column; gap:12px; margin-top:10px;">
+                <button class="btn btn-iban" onclick="copyText(cardData.iban, 'IBAN Kopyalandı!')">
+                    <i class="fas fa-credit-card"></i>
+                    <span>IBAN Kopyala</span>
+                </button>
+                <button class="btn btn-iban" onclick="copyText(cardData.ibanName, 'Alıcı Adı Kopyalandı!')">
+                    <i class="fas fa-user-tag"></i>
+                    <span id="lblIbanName">Alıcı Adını Kopyala</span>
+                </button>
+            </div>
         </div>
 
         <div class="bottom-area">
@@ -267,7 +270,7 @@
             
             <div class="input-group">
                 <span class="label">Ad Soyad</span>
-                <input type="text" id="inName" class="input" placeholder="Ad ve Soyad">
+                <input type="text" id="inName" class="input" placeholder="Ahmet Yılmaz">
             </div>
 
             <div class="input-group">
@@ -278,11 +281,6 @@
             <div class="input-group">
                 <span class="label">Telefon Numarası</span>
                 <input type="tel" id="inPhone" class="input" placeholder="05XX XXX XX XX">
-            </div>
-
-            <div class="input-group">
-                <span class="label">IBAN (Varsa)</span>
-                <input type="text" id="inIban" class="input" placeholder="TRXX 0000...">
             </div>
 
             <div class="input-group">
@@ -303,6 +301,19 @@
             <div class="input-group">
                 <span class="label">Profil Resmi (Link)</span>
                 <input type="text" id="inImg" class="input" placeholder="https://...">
+            </div>
+
+            <div style="border-top:1px solid #222; margin: 25px 0;"></div>
+            <p style="color:var(--gold); font-size:12px; margin-bottom:20px; text-align:center;">BANKA BİLGİLERİ</p>
+
+            <div class="input-group">
+                <span class="label">IBAN Numarası (TR...)</span>
+                <input type="text" id="inIban" class="input" placeholder="TRXX 0000...">
+            </div>
+
+            <div class="input-group">
+                <span class="label">IBAN Alıcı Adı (Ad Soyad / Şirket)</span>
+                <input type="text" id="inIbanName" class="input" placeholder="Örn: Yılmaz A.Ş.">
             </div>
 
             <div style="border-top:1px solid #222; margin: 25px 0;"></div>
@@ -334,7 +345,6 @@
     </div>
 
     <script>
-        // APP SCRIPT URL (MEVCUT)
         const API_URL = "https://script.google.com/macros/s/AKfycbyvtvYWLmkq8AqmCEhf_FP5fYLaliFpz_p-Jx4_miEM1vgCvHIM8qDS06A5kKP9F6W0ZA/exec";
         
         const urlParams = new URLSearchParams(window.location.search);
@@ -359,11 +369,13 @@
                     openSetup();
                 } else {
                     document.getElementById('cardView').style.display = 'flex';
-                    // TEMİZLİK: Gelen verideki ¬= işaretlerini temizle
-                    let cleanTitle = (data.title || "").replace(/¬=/g, "").replace(/¬/g, "").trim();
+                    // TEMİZLİK: Eski verilerdeki tüm ¬= ve benzeri artıkları temizle
+                    let cleanTitle = (data.title || "").replace(/¬=/g, "").replace(/¬/g, "").replace(/=/g, "").trim();
                     let rawFolder = (data.folder || "").replace(/¬=/g, "").replace(/¬/g, "");
                     const parts = rawFolder.split("|||");
                     
+                    // YAPILANDIRMA: 
+                    // 0:Web, 1:Email, 2:IBAN, 3:Title, 4:Phone, 5:Whats, 6:Insta, 7:Linkedin, 8:Map, 9:Img, 10:Facebook, 11:IbanName
                     cardData = {
                         name: cleanTitle,
                         web: decodeSafe(parts[0]),
@@ -376,7 +388,8 @@
                         linkedin: decodeSafe(parts[7]),
                         map: decodeSafe(parts[8]),
                         img: decodeSafe(parts[9]),
-                        facebook: decodeSafe(parts[10])
+                        facebook: decodeSafe(parts[10]),
+                        ibanName: decodeSafe(parts[11]) // YENİ: Alıcı Adı
                     };
                     renderView();
                     if (localStorage.getItem('admin_' + currentID) === "1") {
@@ -407,10 +420,15 @@
                 document.getElementById('vInitials').style.display = 'flex';
             }
 
+            // IBAN VE ALICI ADI GÖSTERİMİ (EN ALTTA)
             if(cardData.iban && cardData.iban.length > 5) {
-                document.getElementById('btnIban').style.display = 'flex';
+                document.getElementById('ibanSection').style.display = 'flex';
+                // Alıcı adı varsa göster, yoksa butonu gizle
+                if(cardData.ibanName && cardData.ibanName.length > 1) {
+                   document.getElementById('lblIbanName').innerText = "Alıcı: " + cardData.ibanName;
+                }
             } else {
-                document.getElementById('btnIban').style.display = 'none';
+                document.getElementById('ibanSection').style.display = 'none';
             }
 
             showBtn('btnCall', cardData.phone, `tel:${normalizeTel(cardData.phone)}`);
@@ -434,18 +452,18 @@
             });
         }
 
-        function copyIban() {
-            if(!cardData.iban) return;
+        function copyText(text, msg) {
+            if(!text) return;
             if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(cardData.iban).then(() => showToast("IBAN Kopyalandı!"));
+                navigator.clipboard.writeText(text).then(() => showToast(msg));
             } else {
                 const textArea = document.createElement("textarea");
-                textArea.value = cardData.iban;
+                textArea.value = text;
                 textArea.style.position = "fixed";
                 document.body.appendChild(textArea);
                 textArea.focus();
                 textArea.select();
-                try { document.execCommand('copy'); showToast("IBAN Kopyalandı!"); } catch (err) {}
+                try { document.execCommand('copy'); showToast(msg); } catch (err) {}
                 document.body.removeChild(textArea);
             }
         }
@@ -457,43 +475,34 @@
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
 
-        // GELİŞTİRİLMİŞ vCard (Ad Soyad Ayrımı)
+        // SADELEŞTİRİLMİŞ vCard (iPhone için Temiz Görünüm)
         function downloadVCard() {
             if(!cardData.name) return;
             
-            // Ad ve Soyadı ayırma mantığı
             const fullName = cardData.name.trim();
             const lastSpaceIndex = fullName.lastIndexOf(" ");
-            let firstName = "";
+            let firstName = fullName;
             let lastName = "";
-
             if (lastSpaceIndex > 0) {
                 firstName = fullName.substring(0, lastSpaceIndex);
                 lastName = fullName.substring(lastSpaceIndex + 1);
-            } else {
-                firstName = fullName; // Soyad yoksa hepsi isim
             }
 
-            let notes = "";
-            if(cardData.iban) notes += `IBAN: ${cardData.iban}\n`;
-            if(cardData.insta) notes += `Instagram: ${cardData.insta}\n`;
-
+            // SADECE GEREKLİ ALANLAR (Tekrar Yok)
             const vcardLines = [
                 "BEGIN:VCARD", "VERSION:3.0", "CHARSET:UTF-8",
-                // N: Soyad;Ad;OrtaAd;Ünvan;Ek
                 `N;CHARSET=UTF-8:${lastName};${firstName};;;`,
                 `FN;CHARSET=UTF-8:${cardData.name}`,
                 `TITLE;CHARSET=UTF-8:${cardData.title || ""}`,
-                `ORG;CHARSET=UTF-8:${cardData.title || ""}`,
-                `TEL;TYPE=CELL,VOICE:${cardData.phone || ""}`,
-                `TEL;TYPE=WORK,VOICE:${cardData.whats || ""}`,
-                `EMAIL;TYPE=WORK,INTERNET:${cardData.email || ""}`,
+                `ORG;CHARSET=UTF-8:${cardData.title || ""}`, // iPhone için şirket yerine ünvan
+                // Sadece 1 tane Telefon (Cep)
+                `TEL;TYPE=CELL:${cardData.phone || ""}`,
+                // Sadece 1 tane Web Sitesi
                 `URL;TYPE=WORK:${ensureHttp(cardData.web || window.location.href)}`,
+                // Sadece 1 tane Adres
                 `ADR;TYPE=WORK;CHARSET=UTF-8:;;${cardData.map || ""};;;;`,
-                cardData.insta ? `URL;TYPE=Instagram:${ensureHttp(cardData.insta)}` : "",
-                cardData.linkedin ? `URL;TYPE=LinkedIn:${ensureHttp(cardData.linkedin)}` : "",
-                cardData.facebook ? `URL;TYPE=Facebook:${ensureHttp(cardData.facebook)}` : "",
-                `NOTE;CHARSET=UTF-8:${notes}`,
+                // Instagram (Social Profile)
+                cardData.insta ? `X-SOCIALPROFILE;TYPE=instagram:${ensureHttp(cardData.insta)}` : "",
                 "END:VCARD"
             ];
             
@@ -515,6 +524,7 @@
             valSet('inTitle', cardData.title);
             valSet('inPhone', cardData.phone);
             valSet('inIban', cardData.iban);
+            valSet('inIbanName', cardData.ibanName); // YENİ
             valSet('inEmail', cardData.email);
             valSet('inWhats', cardData.whats);
             valSet('inWeb', cardData.web);
@@ -533,6 +543,7 @@
             btn.innerText = "KAYDEDİLİYOR...";
             btn.disabled = true;
 
+            // DİKKAT: 11. indekse (en sona) Alıcı Adını ekledik.
             const folderStr = [
                 encodeSafe(val('inWeb')),
                 encodeSafe(val('inEmail')),
@@ -544,13 +555,13 @@
                 encodeSafe(val('inLinkedin')),
                 encodeSafe(val('inMap')),
                 encodeSafe(val('inImg')),
-                encodeSafe(val('inFacebook'))
+                encodeSafe(val('inFacebook')),
+                encodeSafe(val('inIbanName')) // YENİ SLOT
             ].join("|||");
 
-            // ÖNEMLİ: ¬= işaretini URL'den tamamen kaldırdım, yerine boş not parametresi (&not=)
             const finalUrl = API_URL + "?action=save&id=" + currentID + 
                              "&title=" + encodeURIComponent(name) + 
-                             "&not=&folder=" + encodeURIComponent(folderStr) + 
+                             "¬=&folder=" + encodeURIComponent(folderStr) + 
                              "&ses=";
 
             fetch(finalUrl)
@@ -567,27 +578,15 @@
             });
         }
 
-        /* YARDIMCILAR */
         function val(id) { return document.getElementById(id).value; }
         function valSet(id, v) { document.getElementById(id).value = v || ""; }
         function encodeSafe(s) { return encodeURIComponent((s || "").trim()); }
         function decodeSafe(s) { try { return decodeURIComponent(s); } catch(e){ return s; } }
         function normalizeTel(t) { return (t||"").replace(/[^\d]/g,'').replace(/^0/,'90'); }
-        
-        function ensureHttp(url) {
-            if (!url) return "";
-            if (!/^https?:\/\//i.test(url)) return 'https://' + url;
-            return url;
-        }
-
+        function ensureHttp(url) { if (!url) return ""; if (!/^https?:\/\//i.test(url)) return 'https://' + url; return url; }
         function showBtn(id, val, href) {
             const el = document.getElementById(id);
-            if (val && val.length > 2) {
-                el.style.display = 'flex';
-                el.href = href;
-            } else {
-                el.style.display = 'none';
-            }
+            if (val && val.length > 2) { el.style.display = 'flex'; el.href = href; } else { el.style.display = 'none'; }
         }
     </script>
 </body>
