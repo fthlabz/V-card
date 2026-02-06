@@ -6,29 +6,21 @@
     <title>Digital Business Card</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* --- GENEL AYARLAR --- */
         :root {
             --bg-body: #050505;
             --bg-surface: #141414;
             --gold: #D4AF37;
             --text-primary: #ffffff;
             --text-secondary: #9ca3af;
-            --btn-height: 56px;
+            --btn-height: 60px; /* Butonları biraz daha yükselttim, parmak tam otursun */
         }
 
         ::-webkit-scrollbar { display: none; }
-        
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            outline: none; 
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
         html, body {
             margin: 0; padding: 0;
@@ -38,24 +30,21 @@
             min-height: 100vh;
             width: 100%;
             overflow-x: hidden;
-            display: flex; 
-            justify-content: center;
+            display: flex; justify-content: center;
             background-image: radial-gradient(circle at 50% 0%, #1e1e1e 0%, #000000 70%);
         }
 
-        /* --- YÜKLENİYOR EKRANI --- */
         #loader {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; align-items: center; justify-content: center;
         }
         .spinner {
-            width: 40px; height: 40px; border: 2px solid #333;
-            border-top: 2px solid var(--gold); border-radius: 50%;
+            width: 40px; height: 40px; border: 3px solid #333;
+            border-top: 3px solid var(--gold); border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- ANA KAPLAYICI --- */
         .wrapper {
             width: 100%; max-width: 420px;
             padding: 40px 24px;
@@ -63,103 +52,122 @@
             overflow-y: auto; padding-bottom: 120px;
         }
 
-        /* --- PROFİL ALANI --- */
         .profile-area { text-align: center; margin-bottom: 35px; width: 100%; }
         
         .avatar-box {
             width: 120px; height: 120px; margin: 0 auto 20px;
-            border-radius: 50%; padding: 3px;
+            border-radius: 50%; padding: 4px;
             background: linear-gradient(135deg, var(--gold), #8a6e18);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.5); /* Gölgeyi güçlendirdim */
             overflow: hidden;
         }
-        
         .avatar { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; background: #222; }
-        
         .avatar-fallback {
             display: flex; align-items: center; justify-content: center;
             width: 100%; height: 100%; background: #222; color: var(--gold);
-            font-size: 40px; font-weight: 700; border-radius: 50%;
+            font-size: 45px; font-weight: 800; border-radius: 50%;
         }
 
-        .name { font-size: 28px; font-weight: 700; margin: 0; text-align: center; }
-        .title { font-size: 14px; color: var(--gold); margin-top: 8px; text-transform: uppercase; letter-spacing: 1.5px; text-align: center; }
+        .name { font-size: 30px; font-weight: 800; margin: 0; text-align: center; letter-spacing: -0.5px; }
+        .title { font-size: 15px; color: var(--gold); margin-top: 8px; text-transform: uppercase; letter-spacing: 2px; text-align: center; font-weight: 600; }
 
-        /* --- BUTON GRUBU --- */
-        .btn-group { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+        .btn-group { width: 100%; display: flex; flex-direction: column; gap: 14px; }
 
+        /* --- BUTON TASARIMI (KALINLAŞTIRILDI) --- */
         .btn {
             width: 100%; height: var(--btn-height);
             background: var(--bg-surface);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            display: flex; align-items: center; padding: 0 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            display: flex; align-items: center; padding: 0 22px;
             color: var(--text-primary); text-decoration: none;
             cursor: pointer;
+            transition: transform 0.1s;
         }
+        .btn:active { transform: scale(0.98); background: #222; }
         
-        .btn i { font-size: 20px; width: 28px; text-align: center; color: #9ca3af; margin-right: 16px; }
+        .btn i { font-size: 22px; width: 30px; text-align: center; color: #bbb; margin-right: 15px; }
         
-        /* Altın Buton */
+        /* Yazı Ayarı: İlk fotodaki gibi tok durması için */
+        .btn span { 
+            font-size: 17px; /* Büyütüldü */
+            font-weight: 600; /* Kalınlaştırıldı (Semi-Bold) */
+            letter-spacing: 0.3px;
+        }
+
+        /* REHBERE KAYDET (EN ÜSTTEKİ) */
         .btn-gold {
             background: linear-gradient(135deg, #D4AF37, #C5A028);
             border: none; color: #000; justify-content: center;
-            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
         }
         .btn-gold i { color: #000; }
+        .btn-gold span { font-weight: 800; font-size: 18px; } /* Daha da kalın */
 
-        /* IBAN Butonları */
+        /* IBAN */
         .btn-iban {
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
         }
         .btn-iban i { color: var(--gold); }
 
-        /* Bölüm Başlıkları */
+        /* BÖLÜM BAŞLIKLARI */
         .section-title {
-            color: var(--gold); font-size: 11px; letter-spacing: 2px;
-            margin-top: 30px; margin-bottom: 8px; width: 100%; text-align: center;
-            opacity: 0.6; text-transform: uppercase; border-bottom: 1px solid #333; line-height: 0.1em;
+            color: var(--gold); font-size: 11px; letter-spacing: 2px; font-weight: 800;
+            margin-top: 30px; margin-bottom: 10px; width: 100%; text-align: center;
+            opacity: 0.7; text-transform: uppercase; 
+            display: flex; align-items: center; justify-content: center;
         }
-        .section-title span { background: var(--bg-body); padding: 0 10px; }
+        .section-title::before, .section-title::after {
+            content: ""; height: 1px; background: #333; flex: 1; margin: 0 15px;
+        }
 
-        /* --- BİLDİRİM KUTUSU (TOAST) --- */
         #toast {
             visibility: hidden; min-width: 250px; background-color: var(--gold); color: #000;
             text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 10000;
-            left: 50%; bottom: 30px; transform: translateX(-50%); font-weight: 700;
+            left: 50%; bottom: 30px; transform: translateX(-50%); font-weight: 800; font-size: 15px;
             opacity: 0; transition: 0.3s;
         }
         #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
-        /* --- ALT KISIM (QR & ADMIN) --- */
         .bottom-area {
             margin-top: 40px; width: 100%;
             display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
         .qr-frame { padding: 15px; background: #fff; border-radius: 16px; }
-        
         .edit-trigger {
-            font-size: 12px; color: #444; cursor: pointer;
+            font-size: 14px; color: #666; cursor: pointer; font-weight: 600;
             display: none; align-items: center; gap: 6px;
-            padding: 8px 16px; border-radius: 20px;
+            padding: 10px 20px; border-radius: 20px; background: #111;
         }
-        .branding { font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
+        .branding { font-size: 11px; color: #444; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; font-weight: 700; }
 
-        /* --- KURULUM PANELİ --- */
+        /* --- ADMIN PANELİ (YAZILAR BÜYÜTÜLDÜ) --- */
         #setupPanel {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
             padding: 40px 24px; display: none;
             flex-direction: column; align-items: center; justify-content: flex-start;
             overflow-y: auto;
         }
-        .setup-content { width: 100%; max-width: 420px; padding-bottom: 60px; }
-        .setup-title { color: var(--gold); font-size: 22px; margin-bottom: 30px; text-align: center; }
+        .setup-content { width: 100%; max-width: 420px; padding-bottom: 80px; }
+        .setup-title { color: var(--gold); font-size: 24px; margin-bottom: 30px; text-align: center; font-weight: 800; }
         
-        .input-group { margin-bottom: 20px; width: 100%; }
-        .label { display: block; font-size: 13px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
-        .input { width: 100%; height: 54px; background: #111; border: 1px solid #333; border-radius: 12px; padding: 0 16px; color: #fff; }
-        .save-btn { width: 100%; height: 56px; background: var(--gold); border: none; border-radius: 12px; color: #000; font-weight: 700; cursor: pointer; }
+        .input-group { margin-bottom: 22px; width: 100%; }
+        .label { display: block; font-size: 14px; color: #aaa; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        
+        /* Inputları da kalınlaştırdık */
+        .input { 
+            width: 100%; height: 58px; background: #111; 
+            border: 1px solid #333; border-radius: 14px; padding: 0 18px; 
+            color: #fff; font-size: 17px; font-weight: 500; font-family: 'Outfit', sans-serif;
+        }
+        .input:focus { border-color: var(--gold); outline: none; }
+        
+        .save-btn { 
+            width: 100%; height: 60px; background: var(--gold); border: none; 
+            border-radius: 14px; color: #000; font-weight: 800; font-size: 18px; 
+            margin-top: 20px; cursor: pointer; 
+        }
     </style>
 </head>
 <body>
@@ -179,7 +187,8 @@
 
         <div class="btn-group">
             <button onclick="downloadVCard()" class="btn btn-gold">
-                <i class="fas fa-user-plus"></i> Rehbere Kaydet
+                <i class="fas fa-user-plus"></i>
+                <span>Rehbere Kaydet</span>
             </button>
 
             <a id="btnCall" href="#" class="btn"><i class="fas fa-phone"></i> <span id="lblCall">...</span></a>
@@ -191,8 +200,8 @@
             <a id="btnWeb" href="#" target="_blank" class="btn"><i class="fas fa-globe"></i> <span>Web Sitesi</span></a>
             <a id="btnMap" href="#" target="_blank" class="btn"><i class="fas fa-location-dot"></i> <span>Konum / Adres</span></a>
 
-            <div id="companySection" style="display:none; width:100%; flex-direction:column; gap:12px;">
-                <div class="section-title"><span>KURUMSAL</span></div>
+            <div id="companySection" style="display:none; width:100%; flex-direction:column; gap:14px;">
+                <div class="section-title">KURUMSAL</div>
                 
                 <button id="btnTax" class="btn" onclick="copyTaxInfo()" style="display:none;">
                     <i class="fas fa-file-invoice"></i> <span>Fatura Bilgilerini Kopyala</span>
@@ -215,8 +224,8 @@
                 </a>
             </div>
 
-            <div id="footerSection" style="display:none; width:100%; flex-direction:column; gap:12px; margin-top:20px;">
-                <div class="section-title"><span>DİĞER</span></div>
+            <div id="footerSection" style="display:none; width:100%; flex-direction:column; gap:14px;">
+                <div class="section-title">DİĞER</div>
                 
                 <button class="btn" onclick="shareCard()">
                     <i class="fas fa-share-alt"></i> <span>Kartı Paylaş</span>
@@ -234,7 +243,7 @@
         <div class="bottom-area">
             <div class="qr-frame"><div id="qrcode"></div></div>
             <div id="adminEdit" class="edit-trigger" onclick="openSetup()">
-                <i class="fas fa-pen"></i> Düzenle
+                <i class="fas fa-pen"></i> DÜZENLE
             </div>
             <div class="branding">SECURE DIGITAL CARD</div>
         </div>
@@ -242,20 +251,20 @@
 
     <div id="setupPanel">
         <div class="setup-content">
-            <h2 class="setup-title">PROFİL VE ŞİRKET</h2>
+            <h2 class="setup-title">KART AYARLARI</h2>
             
             <div class="input-group"><span class="label">Ad Soyad</span><input type="text" id="inName" class="input"></div>
-            <div class="input-group"><span class="label">Kısa Ünvan (Profilde Görünür)</span><input type="text" id="inTitle" class="input"></div>
+            <div class="input-group"><span class="label">Kısa Ünvan</span><input type="text" id="inTitle" class="input"></div>
             <div class="input-group"><span class="label">Telefon</span><input type="tel" id="inPhone" class="input"></div>
-            <div class="input-group"><span class="label">WhatsApp (Farklıysa)</span><input type="tel" id="inWhats" class="input"></div>
+            <div class="input-group"><span class="label">WhatsApp</span><input type="tel" id="inWhats" class="input"></div>
             <div class="input-group"><span class="label">E-Posta</span><input type="email" id="inEmail" class="input"></div>
             <div class="input-group"><span class="label">Web Sitesi</span><input type="text" id="inWeb" class="input"></div>
             <div class="input-group"><span class="label">Resim Linki</span><input type="text" id="inImg" class="input"></div>
 
-            <div style="border-top:1px solid #333; margin:20px 0;"></div>
-            <p style="color:var(--gold); text-align:center; font-size:12px;">RESMİ BİLGİLER & LİNKLER</p>
+            <div style="border-top:1px solid #333; margin:25px 0;"></div>
+            <p style="color:var(--gold); text-align:center; font-size:13px; font-weight:700; letter-spacing:1px;">KURUMSAL BİLGİLER</p>
             
-            <div class="input-group"><span class="label">Şirket Resmi Adı (Fatura İçin)</span><input type="text" id="inCompName" class="input"></div>
+            <div class="input-group"><span class="label">Şirket Resmi Adı</span><input type="text" id="inCompName" class="input"></div>
             <div class="input-group"><span class="label">Vergi Dairesi</span><input type="text" id="inTaxOffice" class="input"></div>
             <div class="input-group"><span class="label">Vergi Numarası</span><input type="text" id="inTaxNo" class="input"></div>
             
@@ -264,8 +273,8 @@
             <div class="input-group"><span class="label">Ödeme Linki</span><input type="text" id="inPay" class="input"></div>
             <div class="input-group"><span class="label">Randevu Linki</span><input type="text" id="inBook" class="input"></div>
 
-            <div style="border-top:1px solid #333; margin:20px 0;"></div>
-            <p style="color:var(--gold); text-align:center; font-size:12px;">BANKA & SOSYAL</p>
+            <div style="border-top:1px solid #333; margin:25px 0;"></div>
+            <p style="color:var(--gold); text-align:center; font-size:13px; font-weight:700; letter-spacing:1px;">BANKA & SOSYAL</p>
             
             <div class="input-group"><span class="label">IBAN</span><input type="text" id="inIban" class="input"></div>
             <div class="input-group"><span class="label">IBAN Alıcı Adı</span><input type="text" id="inIbanName" class="input"></div>
@@ -275,7 +284,7 @@
             <div class="input-group"><span class="label">Harita Linki</span><input type="text" id="inMap" class="input"></div>
 
             <button onclick="saveData()" class="save-btn">KAYDET VE YAYINLA</button>
-            <button onclick="document.getElementById('setupPanel').style.display='none'" style="width:100%; background:none; border:none; color:#666; padding:15px; margin-top:10px;">Vazgeç</button>
+            <button onclick="document.getElementById('setupPanel').style.display='none'" style="width:100%; background:none; border:none; color:#666; padding:15px; margin-top:10px; font-size:16px; font-weight:600;">Vazgeç</button>
         </div>
     </div>
 
@@ -298,7 +307,6 @@
             loadData();
         };
 
-        // --- VERİ ÇEKME ---
         function loadData() {
             fetch(API_URL + "?action=read&id=" + currentID)
             .then(res => res.json())
@@ -314,7 +322,6 @@
                     let rawFolder = (data.folder || "").replace(/¬=/g, "").replace(/¬/g, "");
                     const parts = rawFolder.split("|||");
                     
-                    // --- VERİ EŞLEŞTİRME ---
                     cardData = {
                         name: cleanTitle,
                         web: decodeSafe(parts[0]),
@@ -329,7 +336,6 @@
                         img: decodeSafe(parts[9]),
                         facebook: decodeSafe(parts[10]),
                         ibanName: decodeSafe(parts[11]),
-                        // YENİLER
                         compName: decodeSafe(parts[12]),
                         taxOffice: decodeSafe(parts[13]),
                         taxNo: decodeSafe(parts[14]),
@@ -351,7 +357,6 @@
             });
         }
 
-        // --- EKRANA BASMA ---
         function renderView() {
             document.getElementById('vName').innerText = cardData.name || "İsimsiz";
             document.getElementById('vTitle').innerText = cardData.title || "";
@@ -393,7 +398,7 @@
             showBtn('btnWeb', cardData.web, ensureHttp(cardData.web));
             showBtn('btnMap', cardData.map, ensureHttp(cardData.map));
 
-            // Şirket Bölümü Kontrolü
+            // Şirket Bölümü
             const hasCompany = cardData.compName || cardData.catalog || cardData.review || cardData.pay || cardData.book;
             if(hasCompany) {
                 document.getElementById('companySection').style.display = 'flex';
@@ -406,7 +411,7 @@
                 document.getElementById('companySection').style.display = 'none';
             }
 
-            // QR Kod
+            // QR
             document.getElementById("qrcode").innerHTML = "";
             new QRCode(document.getElementById("qrcode"), {
                 text: window.location.href,
@@ -416,7 +421,6 @@
             });
         }
 
-        // --- VERİ KAYDETME ---
         function saveData() {
             const name = val('inName');
             if(!name) return alert("İsim zorunludur.");
@@ -473,7 +477,6 @@
 
         function openSetup() {
             document.getElementById('setupPanel').style.display = 'flex';
-            // MEVCUT
             valSet('inName', cardData.name);
             valSet('inTitle', cardData.title);
             valSet('inPhone', cardData.phone);
@@ -487,7 +490,6 @@
             valSet('inLinkedin', cardData.linkedin);
             valSet('inFacebook', cardData.facebook);
             valSet('inMap', cardData.map);
-            // YENİ
             valSet('inCompName', cardData.compName);
             valSet('inTaxOffice', cardData.taxOffice);
             valSet('inTaxNo', cardData.taxNo);
@@ -498,7 +500,6 @@
         }
 
         // --- YARDIMCILAR ---
-        
         function copyTaxInfo() {
             const info = `FATURA BİLGİLERİ:\nUnvan: ${cardData.compName}\nVD: ${cardData.taxOffice}\nNo: ${cardData.taxNo}\nAdres: ${cardData.map}`;
             copyText(info, 'Fatura Bilgileri Kopyalandı!');
