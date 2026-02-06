@@ -21,10 +21,8 @@
             --btn-height: 56px;
         }
 
-        /* Tüm kaydırma çubuklarını gizle (Chrome, Safari, Edge) */
-        ::-webkit-scrollbar {
-            display: none;
-        }
+        /* Scrollbar Gizleme */
+        ::-webkit-scrollbar { display: none; }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
@@ -35,11 +33,9 @@
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
             width: 100%;
-            overflow-x: hidden; /* Yatay kaydırmayı engelle */
-            /* Dikey kaydırma çubuğunu gizle ama kaydırmaya izin ver (Firefox, IE) */
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-            
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
             display: flex; justify-content: center;
             background-image: radial-gradient(circle at 50% 0%, #1e1e1e 0%, #000000 70%);
         }
@@ -62,13 +58,12 @@
             padding: 40px 24px;
             display: flex; flex-direction: column; align-items: center;
             animation: fadeIn 0.6s ease-out;
-            overflow-y: auto; /* Dikey kaydırmaya izin ver */
+            overflow-y: auto;
+            padding-bottom: 100px; /* Alt kısım rahatlasın */
         }
 
         /* PROFİL */
-        .profile-area {
-            text-align: center; margin-bottom: 35px; width: 100%;
-        }
+        .profile-area { text-align: center; margin-bottom: 35px; width: 100%; }
         
         .avatar-box {
             width: 120px; height: 120px; margin: 0 auto 20px;
@@ -110,86 +105,62 @@
             transition: transform 0.1s, background 0.2s;
             position: relative; overflow: hidden;
         }
-
         .btn:active { transform: scale(0.98); background: #1f1f1f; }
-
-        .btn i {
-            font-size: 20px; width: 28px; text-align: center;
-            color: var(--text-secondary); margin-right: 16px;
-        }
-
+        .btn i { font-size: 20px; width: 28px; text-align: center; color: var(--text-secondary); margin-right: 16px; }
         .btn span { font-size: 15px; font-weight: 500; letter-spacing: 0.3px; }
 
-        /* REHBERE KAYDET (GOLD) */
         .btn-gold {
             background: linear-gradient(135deg, #D4AF37, #C5A028);
             border: none; color: #000;
             box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
-            margin-bottom: 10px;
-            justify-content: center; /* Ortala */
+            margin-bottom: 10px; justify-content: center;
         }
-        
         .btn-gold:active { transform: scale(0.96); filter: brightness(0.9); }
         .btn-gold i { color: #000; margin-right: 10px; }
         .btn-gold span { font-weight: 700; font-size: 16px; }
-
-        /* SOSYAL BUTON RENKLERİ (Opsiyonel: İkonları renklendirmek için) */
-        .btn.social:hover i { color: #fff; }
-        .fa-linkedin-in { color: #0077b5 !important; }
-        .fa-whatsapp { color: #25D366 !important; }
-        .fa-instagram { color: #C13584 !important; }
-        .fa-facebook-f { color: #1877F2 !important; }
 
         /* QR & FOOTER */
         .bottom-area {
             margin-top: 40px; width: 100%;
             display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
-
         .qr-frame {
             padding: 15px; background: #fff; border-radius: 16px;
             box-shadow: 0 0 40px rgba(0,0,0,0.5);
         }
-
-        /* EDİT BUTONU (Sabit, Küçük) */
         .edit-trigger {
             font-size: 12px; color: #444; cursor: pointer;
-            display: flex; align-items: center; gap: 6px;
-            padding: 8px 16px; border-radius: 20px;
-            transition: color 0.3s;
-            display: none; /* JS ile açılacak */
+            display: none; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: 20px; transition: color 0.3s;
         }
-        .edit-trigger:hover { color: var(--gold); background: rgba(255,255,255,0.05); }
+        .branding { font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
 
-        .branding {
-            font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase;
-            margin-top: 10px;
-        }
-
-        /* --- SETUP PANELİ (MODAL OLARAK GÜNCELLENDİ) --- */
+        /* --- SETUP PANELİ --- */
         #setupPanel {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
-            padding: 40px 24px; 
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow-y: auto; /* Dikey kaydırmaya izin ver */
+            padding: 40px 24px; display: none;
+            flex-direction: column; align-items: center; justify-content: flex-start;
+            overflow-y: auto;
         }
-        
-        .setup-content {
-            width: 100%;
-            max-width: 420px;
-        }
-
+        .setup-content { width: 100%; max-width: 420px; padding-bottom: 60px; }
         .setup-title { color: var(--gold); font-size: 22px; margin-bottom: 30px; text-align: center; }
         
-        .input-group { margin-bottom: 18px; width: 100%; }
-        .label { display: block; font-size: 11px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .input-group { margin-bottom: 20px; width: 100%; }
+        .label { display: block; font-size: 13px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        
+        /* GÜNCELLENEN INPUT STİLİ: Daha büyük yazı, daha rahat kullanım */
         .input {
-            width: 100%; height: 50px; background: #111; border: 1px solid #333;
-            border-radius: 12px; padding: 0 16px; color: #fff; font-family: inherit;
+            width: 100%; 
+            height: 54px; /* Yüksekliği artırdım */
+            background: #111; 
+            border: 1px solid #333;
+            border-radius: 12px; 
+            padding: 0 16px; 
+            color: #fff; 
+            font-family: inherit;
+            font-size: 16px; /* 16px: iPhone'da zoom yapmayı engeller ve okunaktır */
         }
+        .input::placeholder { color: #444; }
         .input:focus { border-color: var(--gold); }
 
         .save-btn {
@@ -199,7 +170,6 @@
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
     </style>
 </head>
 <body>
@@ -227,7 +197,7 @@
                 <span id="lblCall">...</span>
             </a>
 
-            <a id="btnWa" href="#" target="_blank" class="btn social">
+            <a id="btnWa" href="#" target="_blank" class="btn">
                 <i class="fab fa-whatsapp"></i>
                 <span>WhatsApp</span>
             </a>
@@ -237,17 +207,17 @@
                 <span>E-Posta Gönder</span>
             </a>
 
-            <a id="btnInsta" href="#" target="_blank" class="btn social">
+            <a id="btnInsta" href="#" target="_blank" class="btn">
                 <i class="fab fa-instagram"></i>
                 <span>Instagram</span>
             </a>
 
-            <a id="btnLinkedin" href="#" target="_blank" class="btn social">
+            <a id="btnLinkedin" href="#" target="_blank" class="btn">
                 <i class="fab fa-linkedin-in"></i>
                 <span>LinkedIn</span>
             </a>
 
-            <a id="btnFacebook" href="#" target="_blank" class="btn social">
+            <a id="btnFacebook" href="#" target="_blank" class="btn">
                 <i class="fab fa-facebook-f"></i>
                 <span>Facebook</span>
             </a>
@@ -267,14 +237,11 @@
             <div class="qr-frame">
                 <div id="qrcode"></div>
             </div>
-            
             <div id="adminEdit" class="edit-trigger" onclick="openSetup()">
                 <i class="fas fa-pen"></i> Düzenle
             </div>
-
             <div class="branding">SECURE DIGITAL CARD</div>
         </div>
-
     </div>
 
     <div id="setupPanel">
@@ -316,8 +283,8 @@
                 <input type="text" id="inImg" class="input" placeholder="https://...">
             </div>
 
-            <div style="border-top:1px solid #222; margin: 20px 0;"></div>
-            <p style="color:#666; font-size:10px; margin-bottom:15px;">SOSYAL MEDYA LİNKLERİ (Kullanıcı Adı Değil, Tam Link)</p>
+            <div style="border-top:1px solid #222; margin: 25px 0;"></div>
+            <p style="color:#666; font-size:12px; margin-bottom:20px; text-align:center;">SOSYAL MEDYA LİNKLERİ</p>
 
             <div class="input-group">
                 <span class="label">Instagram Linki</span>
@@ -336,11 +303,11 @@
 
             <div class="input-group">
                 <span class="label">Konum Linki (Maps)</span>
-                <input type="text" id="inMap" class="input" placeholder="https://maps.google.com/...">
+                <input type="text" id="inMap" class="input" placeholder="http://maps.google.com/...">
             </div>
 
             <button onclick="saveData()" class="save-btn">KAYDET VE YAYINLA</button>
-            <button onclick="document.getElementById('setupPanel').style.display='none'" style="width:100%; background:none; border:none; color:#666; padding:15px; margin-top:10px;">Vazgeç</button>
+            <button onclick="document.getElementById('setupPanel').style.display='none'" style="width:100%; background:none; border:none; color:#666; padding:15px; margin-top:10px; font-size:14px;">Vazgeç</button>
         </div>
     </div>
 
@@ -365,34 +332,25 @@
                 document.getElementById('loader').style.display = 'none';
 
                 if (data.status === "empty") {
-                    // Veri yok, Kurulumu Aç
                     openSetup();
                 } else {
-                    // Veri var, Kartı Göster
                     document.getElementById('cardView').style.display = 'flex';
-                    
-                    // Verileri Parçala
-                    // Yapı: [Web, Email, Hash, Title, Phone, Whats, Insta, Linkedin, Map, Img, Facebook]
                     const parts = (data.folder || "").split("|||");
                     
                     cardData = {
                         name: data.title,
                         web: decodeSafe(parts[0]),
                         email: decodeSafe(parts[1]),
-                        // parts[2] hash
                         title: decodeSafe(parts[3]),
                         phone: decodeSafe(parts[4]),
                         whats: decodeSafe(parts[5]),
                         insta: decodeSafe(parts[6]),
-                        linkedin: decodeSafe(parts[7]), // Yeni Slot
+                        linkedin: decodeSafe(parts[7]),
                         map: decodeSafe(parts[8]),
                         img: decodeSafe(parts[9]),
-                        facebook: decodeSafe(parts[10]) // Yeni Slot
+                        facebook: decodeSafe(parts[10])
                     };
-                    
                     renderView();
-
-                    // Admin Kontrolü
                     if (localStorage.getItem('admin_' + currentID) === "1") {
                         document.getElementById('adminEdit').style.display = 'flex';
                     }
@@ -402,7 +360,6 @@
         }
 
         function renderView() {
-            // Profil
             document.getElementById('vName').innerText = cardData.name || "İsimsiz";
             document.getElementById('vTitle').innerText = cardData.title || "";
             
@@ -416,19 +373,19 @@
                 imgEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(cardData.name)}&background=D4AF37&color=000&size=256`;
             }
 
-            // Butonları Göster/Gizle
+            // Linkleri güvenli hale getirerek göster (ensureHttp fonksiyonu kullanıldı)
             showBtn('btnCall', cardData.phone, `tel:${normalizeTel(cardData.phone)}`);
             if(cardData.phone) document.getElementById('lblCall').innerText = cardData.phone;
 
             showBtn('btnWa', cardData.whats, `https://wa.me/${normalizeTel(cardData.whats)}`);
             showBtn('btnEmail', cardData.email, `mailto:${cardData.email}`);
-            showBtn('btnInsta', cardData.insta, cardData.insta);
-            showBtn('btnLinkedin', cardData.linkedin, cardData.linkedin);
-            showBtn('btnFacebook', cardData.facebook, cardData.facebook);
-            showBtn('btnWeb', cardData.web, cardData.web);
-            showBtn('btnMap', cardData.map, cardData.map);
+            
+            showBtn('btnInsta', cardData.insta, ensureHttp(cardData.insta));
+            showBtn('btnLinkedin', cardData.linkedin, ensureHttp(cardData.linkedin));
+            showBtn('btnFacebook', cardData.facebook, ensureHttp(cardData.facebook));
+            showBtn('btnWeb', cardData.web, ensureHttp(cardData.web));
+            showBtn('btnMap', cardData.map, ensureHttp(cardData.map));
 
-            // QR Kod
             document.getElementById("qrcode").innerHTML = "";
             new QRCode(document.getElementById("qrcode"), {
                 text: window.location.href,
@@ -438,52 +395,36 @@
             });
         }
 
-        /* --- SİHİRLİ vCard FONKSİYONU (QR Mini Referansı) --- */
         function downloadVCard() {
             if(!cardData.name) return;
-
-            // vCard 3.0 Standardı
             const vcardLines = [
-                "BEGIN:VCARD",
-                "VERSION:3.0",
-                "CHARSET:UTF-8",
+                "BEGIN:VCARD", "VERSION:3.0", "CHARSET:UTF-8",
                 `N;CHARSET=UTF-8:${cardData.name};;;;`,
                 `FN;CHARSET=UTF-8:${cardData.name}`,
                 `TITLE;CHARSET=UTF-8:${cardData.title || ""}`,
-                `ORG;CHARSET=UTF-8:${cardData.title || ""}`, // Şirket yerine de Ünvanı koyduk garanti olsun
+                `ORG;CHARSET=UTF-8:${cardData.title || ""}`,
                 `TEL;TYPE=CELL,VOICE:${cardData.phone || ""}`,
                 `TEL;TYPE=WORK,VOICE:${cardData.whats || ""}`,
                 `EMAIL;TYPE=WORK:${cardData.email || ""}`,
-                `URL;TYPE=WORK:${cardData.web || window.location.href}`,
+                `URL;TYPE=WORK:${ensureHttp(cardData.web || window.location.href)}`,
                 `ADR;TYPE=WORK;CHARSET=UTF-8:;;${cardData.map || ""};;;;`,
-                cardData.insta ? `X-SOCIALPROFILE;TYPE=instagram:${cardData.insta}` : "",
-                cardData.linkedin ? `X-SOCIALPROFILE;TYPE=linkedin:${cardData.linkedin}` : "",
+                cardData.insta ? `X-SOCIALPROFILE;TYPE=instagram:${ensureHttp(cardData.insta)}` : "",
+                cardData.linkedin ? `X-SOCIALPROFILE;TYPE=linkedin:${ensureHttp(cardData.linkedin)}` : "",
                 "END:VCARD"
             ];
-
-            const vcardStr = vcardLines.join("\r\n");
-            const blob = new Blob([vcardStr], { type: "text/vcard;charset=utf-8" });
+            const blob = new Blob([vcardLines.join("\r\n")], { type: "text/vcard;charset=utf-8" });
             const url = URL.createObjectURL(blob);
-            
-            // Link oluştur ve tıkla
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute("download", (cardData.name || "contact").replace(/ /g,"_") + ".vcf");
-            
-            // iOS Fix
-            if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
-                link.target = "_blank";
-            }
-
+            if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) { link.target = "_blank"; }
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        /* --- KURULUM / KAYDETME --- */
         function openSetup() {
-            document.getElementById('setupPanel').style.display = 'flex'; // Modal olarak aç
-            // Formu Doldur
+            document.getElementById('setupPanel').style.display = 'flex';
             valSet('inName', cardData.name);
             valSet('inTitle', cardData.title);
             valSet('inPhone', cardData.phone);
@@ -505,8 +446,7 @@
             btn.innerText = "KAYDEDİLİYOR...";
             btn.disabled = true;
 
-            // Veri Paketleme (Sıra Önemli)
-            // [Web, Email, Hash, Title, Phone, Whats, Insta, Linkedin, Map, Img, Facebook]
+            // DÜZELTME: "&not=" parametresini elle yazıyoruz, encode sorunu olmasın diye
             const folderStr = [
                 encodeSafe(val('inWeb')),
                 encodeSafe(val('inEmail')),
@@ -521,7 +461,13 @@
                 encodeSafe(val('inFacebook'))
             ].join("|||");
 
-            fetch(API_URL + `?action=save&id=${currentID}&title=${encodeURIComponent(name)}¬=&folder=${encodeURIComponent(folderStr)}&ses=`)
+            // URL DÜZELTME: &not= parametresi eklendi ve bozuk karakter temizlendi
+            const finalUrl = API_URL + "?action=save&id=" + currentID + 
+                             "&title=" + encodeURIComponent(name) + 
+                             "&not=&folder=" + encodeURIComponent(folderStr) + 
+                             "&ses=";
+
+            fetch(finalUrl)
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success") {
@@ -541,6 +487,16 @@
         function encodeSafe(s) { return encodeURIComponent((s || "").trim()); }
         function decodeSafe(s) { try { return decodeURIComponent(s); } catch(e){ return s; } }
         function normalizeTel(t) { return (t||"").replace(/[^\d]/g,'').replace(/^0/,'90'); }
+        
+        // YENİ FONKSİYON: HTTP kontrolü yapar, yoksa ekler
+        function ensureHttp(url) {
+            if (!url) return "";
+            if (!/^https?:\/\//i.test(url)) {
+                return 'https://' + url;
+            }
+            return url;
+        }
+
         function showBtn(id, val, href) {
             const el = document.getElementById(id);
             if (val && val.length > 2) {
@@ -550,7 +506,6 @@
                 el.style.display = 'none';
             }
         }
-
     </script>
 </body>
 </html>
