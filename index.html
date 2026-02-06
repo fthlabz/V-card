@@ -21,15 +21,26 @@
             --btn-height: 56px;
         }
 
+        /* Tüm kaydırma çubuklarını gizle (Chrome, Safari, Edge) */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
-        body {
+        html, body {
             margin: 0; padding: 0;
             background-color: var(--bg-body);
             color: var(--text-primary);
             font-family: 'Outfit', sans-serif;
-            display: flex; justify-content: center;
             min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden; /* Yatay kaydırmayı engelle */
+            /* Dikey kaydırma çubuğunu gizle ama kaydırmaya izin ver (Firefox, IE) */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            
+            display: flex; justify-content: center;
             background-image: radial-gradient(circle at 50% 0%, #1e1e1e 0%, #000000 70%);
         }
 
@@ -51,6 +62,7 @@
             padding: 40px 24px;
             display: flex; flex-direction: column; align-items: center;
             animation: fadeIn 0.6s ease-out;
+            overflow-y: auto; /* Dikey kaydırmaya izin ver */
         }
 
         /* PROFİL */
@@ -154,14 +166,25 @@
             margin-top: 10px;
         }
 
-        /* --- SETUP PANELİ --- */
+        /* --- SETUP PANELİ (MODAL OLARAK GÜNCELLENDİ) --- */
         #setupPanel {
-            position: fixed; inset: 0; background: #000; z-index: 100;
-            padding: 40px 24px; overflow-y: auto; display: none;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
+            padding: 40px 24px; 
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto; /* Dikey kaydırmaya izin ver */
         }
+        
+        .setup-content {
+            width: 100%;
+            max-width: 420px;
+        }
+
         .setup-title { color: var(--gold); font-size: 22px; margin-bottom: 30px; text-align: center; }
         
-        .input-group { margin-bottom: 18px; }
+        .input-group { margin-bottom: 18px; width: 100%; }
         .label { display: block; font-size: 11px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
         .input {
             width: 100%; height: 50px; background: #111; border: 1px solid #333;
@@ -255,68 +278,70 @@
     </div>
 
     <div id="setupPanel">
-        <h2 class="setup-title">PROFİL BİLGİLERİ</h2>
-        
-        <div class="input-group">
-            <span class="label">Ad Soyad</span>
-            <input type="text" id="inName" class="input" placeholder="Ahmet Yılmaz">
+        <div class="setup-content">
+            <h2 class="setup-title">PROFİL BİLGİLERİ</h2>
+            
+            <div class="input-group">
+                <span class="label">Ad Soyad</span>
+                <input type="text" id="inName" class="input" placeholder="Ahmet Yılmaz">
+            </div>
+
+            <div class="input-group">
+                <span class="label">Ünvan / Meslek</span>
+                <input type="text" id="inTitle" class="input" placeholder="Genel Müdür">
+            </div>
+
+            <div class="input-group">
+                <span class="label">Telefon Numarası</span>
+                <input type="tel" id="inPhone" class="input" placeholder="05XX XXX XX XX">
+            </div>
+
+            <div class="input-group">
+                <span class="label">E-Posta Adresi</span>
+                <input type="email" id="inEmail" class="input" placeholder="isim@sirket.com">
+            </div>
+
+            <div class="input-group">
+                <span class="label">WhatsApp (Farklıysa)</span>
+                <input type="tel" id="inWhats" class="input" placeholder="05XX XXX XX XX">
+            </div>
+
+            <div class="input-group">
+                <span class="label">Web Sitesi</span>
+                <input type="text" id="inWeb" class="input" placeholder="www.sirket.com">
+            </div>
+
+            <div class="input-group">
+                <span class="label">Profil Resmi (Link)</span>
+                <input type="text" id="inImg" class="input" placeholder="https://...">
+            </div>
+
+            <div style="border-top:1px solid #222; margin: 20px 0;"></div>
+            <p style="color:#666; font-size:10px; margin-bottom:15px;">SOSYAL MEDYA LİNKLERİ (Kullanıcı Adı Değil, Tam Link)</p>
+
+            <div class="input-group">
+                <span class="label">Instagram Linki</span>
+                <input type="text" id="inInsta" class="input" placeholder="https://instagram.com/...">
+            </div>
+
+            <div class="input-group">
+                <span class="label">LinkedIn Linki</span>
+                <input type="text" id="inLinkedin" class="input" placeholder="https://linkedin.com/in/...">
+            </div>
+
+            <div class="input-group">
+                <span class="label">Facebook Linki</span>
+                <input type="text" id="inFacebook" class="input" placeholder="https://facebook.com/...">
+            </div>
+
+            <div class="input-group">
+                <span class="label">Konum Linki (Maps)</span>
+                <input type="text" id="inMap" class="input" placeholder="https://maps.google.com/...">
+            </div>
+
+            <button onclick="saveData()" class="save-btn">KAYDET VE YAYINLA</button>
+            <button onclick="document.getElementById('setupPanel').style.display='none'" style="width:100%; background:none; border:none; color:#666; padding:15px; margin-top:10px;">Vazgeç</button>
         </div>
-
-        <div class="input-group">
-            <span class="label">Ünvan / Meslek</span>
-            <input type="text" id="inTitle" class="input" placeholder="Genel Müdür">
-        </div>
-
-        <div class="input-group">
-            <span class="label">Telefon Numarası</span>
-            <input type="tel" id="inPhone" class="input" placeholder="05XX XXX XX XX">
-        </div>
-
-        <div class="input-group">
-            <span class="label">E-Posta Adresi</span>
-            <input type="email" id="inEmail" class="input" placeholder="isim@sirket.com">
-        </div>
-
-        <div class="input-group">
-            <span class="label">WhatsApp (Farklıysa)</span>
-            <input type="tel" id="inWhats" class="input" placeholder="05XX XXX XX XX">
-        </div>
-
-        <div class="input-group">
-            <span class="label">Web Sitesi</span>
-            <input type="text" id="inWeb" class="input" placeholder="www.sirket.com">
-        </div>
-
-        <div class="input-group">
-            <span class="label">Profil Resmi (Link)</span>
-            <input type="text" id="inImg" class="input" placeholder="https://...">
-        </div>
-
-        <div style="border-top:1px solid #222; margin: 20px 0;"></div>
-        <p style="color:#666; font-size:10px; margin-bottom:15px;">SOSYAL MEDYA LİNKLERİ (Kullanıcı Adı Değil, Tam Link)</p>
-
-        <div class="input-group">
-            <span class="label">Instagram Linki</span>
-            <input type="text" id="inInsta" class="input" placeholder="https://instagram.com/...">
-        </div>
-
-        <div class="input-group">
-            <span class="label">LinkedIn Linki</span>
-            <input type="text" id="inLinkedin" class="input" placeholder="https://linkedin.com/in/...">
-        </div>
-
-        <div class="input-group">
-            <span class="label">Facebook Linki</span>
-            <input type="text" id="inFacebook" class="input" placeholder="https://facebook.com/...">
-        </div>
-
-        <div class="input-group">
-            <span class="label">Konum Linki (Maps)</span>
-            <input type="text" id="inMap" class="input" placeholder="https://maps.google.com/...">
-        </div>
-
-        <button onclick="saveData()" class="save-btn">KAYDET VE YAYINLA</button>
-        <button onclick="document.getElementById('setupPanel').style.display='none'" style="width:100%; background:none; border:none; color:#666; padding:15px; margin-top:10px;">Vazgeç</button>
     </div>
 
     <script>
@@ -457,7 +482,7 @@
 
         /* --- KURULUM / KAYDETME --- */
         function openSetup() {
-            document.getElementById('setupPanel').style.display = 'block';
+            document.getElementById('setupPanel').style.display = 'flex'; // Modal olarak aç
             // Formu Doldur
             valSet('inName', cardData.name);
             valSet('inTitle', cardData.title);
