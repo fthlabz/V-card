@@ -493,7 +493,7 @@
                 "BEGIN:VCARD", "VERSION:3.0", "CHARSET:UTF-8",
                 `N;CHARSET=UTF-8:${lastName};${firstName};;;`,
                 `FN;CHARSET=UTF-8:${cardData.name}`,
-                `TITLE;CHARSET=UTF-8:${cardData.title || ""}`,
+                //`TITLE;CHARSET=UTF-8:${cardData.title || ""}`,
                 `ORG;CHARSET=UTF-8:${cardData.title || ""}`, // iPhone için şirket yerine ünvan
                 // Sadece 1 tane Telefon (Cep)
                 `TEL;TYPE=CELL:${cardData.phone || ""}`,
