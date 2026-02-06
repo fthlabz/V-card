@@ -59,7 +59,7 @@
             display: flex; flex-direction: column; align-items: center;
             animation: fadeIn 0.6s ease-out;
             overflow-y: auto;
-            padding-bottom: 100px; /* Alt kısım rahatlasın */
+            padding-bottom: 100px;
         }
 
         /* PROFİL */
@@ -71,12 +71,20 @@
             background: linear-gradient(135deg, var(--gold), #8a6e18);
             box-shadow: 0 0 30px var(--gold-glow);
             position: relative;
+            overflow: hidden;
         }
         
         .avatar {
             width: 100%; height: 100%; object-fit: cover;
             border-radius: 50%; border: 4px solid var(--bg-body);
             background: #222;
+        }
+
+        /* Resim yüklenemezse gösterilecek stil */
+        .avatar-fallback {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; height: 100%; background: #222; color: var(--gold);
+            font-size: 40px; font-weight: 700; border-radius: 50%;
         }
 
         .name {
@@ -104,6 +112,7 @@
             color: var(--text-primary); text-decoration: none;
             transition: transform 0.1s, background 0.2s;
             position: relative; overflow: hidden;
+            cursor: pointer;
         }
         .btn:active { transform: scale(0.98); background: #1f1f1f; }
         .btn i { font-size: 20px; width: 28px; text-align: center; color: var(--text-secondary); margin-right: 16px; }
@@ -118,6 +127,17 @@
         .btn-gold:active { transform: scale(0.96); filter: brightness(0.9); }
         .btn-gold i { color: #000; margin-right: 10px; }
         .btn-gold span { font-weight: 700; font-size: 16px; }
+
+        /* IBAN Butonu Özel Stili (İsteğe bağlı, şu an standart btn kullanıyor) */
+        
+        /* TOAST BİLDİRİM (IBAN Kopyalandı için) */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: var(--gold); color: #000;
+            text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 10000;
+            left: 50%; bottom: 30px; transform: translateX(-50%); font-weight: 700; font-size: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
         /* QR & FOOTER */
         .bottom-area {
@@ -148,17 +168,9 @@
         .input-group { margin-bottom: 20px; width: 100%; }
         .label { display: block; font-size: 13px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         
-        /* GÜNCELLENEN INPUT STİLİ: Daha büyük yazı, daha rahat kullanım */
         .input {
-            width: 100%; 
-            height: 54px; /* Yüksekliği artırdım */
-            background: #111; 
-            border: 1px solid #333;
-            border-radius: 12px; 
-            padding: 0 16px; 
-            color: #fff; 
-            font-family: inherit;
-            font-size: 16px; /* 16px: iPhone'da zoom yapmayı engeller ve okunaktır */
+            width: 100%; height: 54px; background: #111; border: 1px solid #333;
+            border-radius: 12px; padding: 0 16px; color: #fff; font-family: inherit; font-size: 16px;
         }
         .input::placeholder { color: #444; }
         .input:focus { border-color: var(--gold); }
@@ -175,12 +187,14 @@
 <body>
 
     <div id="loader"><div class="spinner"></div></div>
+    <div id="toast"><i class="fas fa-check-circle"></i> IBAN Kopyalandı!</div>
 
     <div class="wrapper" id="cardView" style="display:none;">
         
         <div class="profile-area">
             <div class="avatar-box">
-                <img id="vImg" class="avatar" src="" alt="Avatar">
+                <img id="vImg" class="avatar" src="" alt="Avatar" onerror="this.style.display='none'; document.getElementById('vInitials').style.display='flex';">
+                <div id="vInitials" class="avatar-fallback" style="display:none;"></div>
             </div>
             <h1 id="vName" class="name"></h1>
             <div id="vTitle" class="title"></div>
@@ -190,6 +204,11 @@
             <button onclick="downloadVCard()" class="btn btn-gold">
                 <i class="fas fa-user-plus"></i>
                 <span>Rehbere Kaydet</span>
+            </button>
+
+            <button id="btnIban" class="btn" onclick="copyIban()" style="display:none;">
+                <i class="fas fa-credit-card"></i>
+                <span>IBAN Kopyala</span>
             </button>
 
             <a id="btnCall" href="#" class="btn">
@@ -264,6 +283,11 @@
             </div>
 
             <div class="input-group">
+                <span class="label">IBAN (Varsa)</span>
+                <input type="text" id="inIban" class="input" placeholder="TRXX 0000...">
+            </div>
+
+            <div class="input-group">
                 <span class="label">E-Posta Adresi</span>
                 <input type="email" id="inEmail" class="input" placeholder="isim@sirket.com">
             </div>
@@ -303,7 +327,7 @@
 
             <div class="input-group">
                 <span class="label">Konum Linki (Maps)</span>
-                <input type="text" id="inMap" class="input" placeholder="http://maps.google.com/...">
+                <input type="text" id="inMap" class="input" placeholder="http://googleusercontent.com/maps...">
             </div>
 
             <button onclick="saveData()" class="save-btn">KAYDET VE YAYINLA</button>
@@ -312,7 +336,9 @@
     </div>
 
     <script>
+        // APP SCRIPT URL'NİZİ BURAYA YAPIŞTIRIN
         const API_URL = "https://script.google.com/macros/s/AKfycbyvtvYWLmkq8AqmCEhf_FP5fYLaliFpz_p-Jx4_miEM1vgCvHIM8qDS06A5kKP9F6W0ZA/exec";
+        
         const urlParams = new URLSearchParams(window.location.search);
         let currentID = urlParams.get('id');
         let cardData = {};
@@ -335,12 +361,16 @@
                     openSetup();
                 } else {
                     document.getElementById('cardView').style.display = 'flex';
-                    const parts = (data.folder || "").split("|||");
+                    // Verileri temizleyerek alıyoruz (¬= temizliği)
+                    let rawFolder = (data.folder || "").replace(/¬=/g, "").replace(/==/g, "");
+                    const parts = rawFolder.split("|||");
                     
+                    // YAPILANDIRMA: [Web, Email, IBAN, Title, Phone, Whats, Insta, Linkedin, Map, Img, Facebook]
                     cardData = {
                         name: data.title,
                         web: decodeSafe(parts[0]),
                         email: decodeSafe(parts[1]),
+                        iban: decodeSafe(parts[2]), 
                         title: decodeSafe(parts[3]),
                         phone: decodeSafe(parts[4]),
                         whats: decodeSafe(parts[5]),
@@ -363,17 +393,31 @@
             document.getElementById('vName').innerText = cardData.name || "İsimsiz";
             document.getElementById('vTitle').innerText = cardData.title || "";
             
+            // Baş harf hesapla (Resim yoksa kullanmak için)
+            const initials = (cardData.name || "U").split(" ").map(n=>n[0]).join("").substring(0,2).toUpperCase();
+            document.getElementById('vInitials').innerText = initials;
+
             const imgEl = document.getElementById('vImg');
             if (cardData.img && cardData.img.length > 5) {
+                imgEl.style.display = 'block'; 
+                document.getElementById('vInitials').style.display = 'none';
                 if(cardData.img.includes("drive.google.com")) {
                     const idMatch = cardData.img.match(/[-\w]{25,}/);
                     if(idMatch) imgEl.src = "https://lh3.googleusercontent.com/d/" + idMatch[0] + "=s500";
                 } else { imgEl.src = cardData.img; }
             } else {
-                imgEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(cardData.name)}&background=D4AF37&color=000&size=256`;
+                imgEl.style.display = 'none';
+                document.getElementById('vInitials').style.display = 'flex';
             }
 
-            // Linkleri güvenli hale getirerek göster (ensureHttp fonksiyonu kullanıldı)
+            // IBAN Gösterimi
+            if(cardData.iban && cardData.iban.length > 5) {
+                document.getElementById('btnIban').style.display = 'flex';
+            } else {
+                document.getElementById('btnIban').style.display = 'none';
+            }
+
+            // Diğer Butonlar
             showBtn('btnCall', cardData.phone, `tel:${normalizeTel(cardData.phone)}`);
             if(cardData.phone) document.getElementById('lblCall').innerText = cardData.phone;
 
@@ -395,24 +439,72 @@
             });
         }
 
+        // IBAN KOPYALAMA
+        function copyIban() {
+            if(!cardData.iban) return;
+            // Modern panoya kopyalama
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(cardData.iban).then(showToast);
+            } else {
+                // Eski yöntem (Fallback)
+                const textArea = document.createElement("textarea");
+                textArea.value = cardData.iban;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try { document.execCommand('copy'); showToast(); } catch (err) {}
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function showToast() {
+            var x = document.getElementById("toast");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        // REHBERE KAYDET (GELİŞTİRİLMİŞ vCARD)
         function downloadVCard() {
             if(!cardData.name) return;
+            
+            // İsimleri ayır (iPhone'da düzgün görünmesi için)
+            const parts = cardData.name.trim().split(" ");
+            const firstName = parts.length > 1 ? parts.slice(0, -1).join(" ") : parts[0];
+            const lastName = parts.length > 1 ? parts[parts.length - 1] : "";
+
+            // vCard 3.0 Standardı - iPhone Uyumlu
+            // iPhone'da sosyal medya linkleri genellikle NOTLAR kısmında veya URL olarak görünür.
+            // Bu yüzden garantilemek için hem URL hem NOT olarak ekliyoruz.
+            
+            let notes = "";
+            if(cardData.iban) notes += `IBAN: ${cardData.iban}\n`;
+            if(cardData.insta) notes += `Instagram: ${cardData.insta}\n`;
+            if(cardData.linkedin) notes += `LinkedIn: ${cardData.linkedin}\n`;
+
             const vcardLines = [
                 "BEGIN:VCARD", "VERSION:3.0", "CHARSET:UTF-8",
-                `N;CHARSET=UTF-8:${cardData.name};;;;`,
+                `N;CHARSET=UTF-8:${lastName};${firstName};;;`,
                 `FN;CHARSET=UTF-8:${cardData.name}`,
                 `TITLE;CHARSET=UTF-8:${cardData.title || ""}`,
-                `ORG;CHARSET=UTF-8:${cardData.title || ""}`,
+                `ORG;CHARSET=UTF-8:${cardData.title || ""}`, // iPhone için Firma yerine Ünvanı da yazıyoruz
                 `TEL;TYPE=CELL,VOICE:${cardData.phone || ""}`,
                 `TEL;TYPE=WORK,VOICE:${cardData.whats || ""}`,
-                `EMAIL;TYPE=WORK:${cardData.email || ""}`,
+                `EMAIL;TYPE=WORK,INTERNET:${cardData.email || ""}`,
                 `URL;TYPE=WORK:${ensureHttp(cardData.web || window.location.href)}`,
                 `ADR;TYPE=WORK;CHARSET=UTF-8:;;${cardData.map || ""};;;;`,
-                cardData.insta ? `X-SOCIALPROFILE;TYPE=instagram:${ensureHttp(cardData.insta)}` : "",
-                cardData.linkedin ? `X-SOCIALPROFILE;TYPE=linkedin:${ensureHttp(cardData.linkedin)}` : "",
+                // Sosyal Medya Linklerini "URL" olarak ekliyoruz ki tıklanabilir olsun
+                cardData.insta ? `URL;TYPE=Instagram:${ensureHttp(cardData.insta)}` : "",
+                cardData.linkedin ? `URL;TYPE=LinkedIn:${ensureHttp(cardData.linkedin)}` : "",
+                cardData.facebook ? `URL;TYPE=Facebook:${ensureHttp(cardData.facebook)}` : "",
+                `NOTE;CHARSET=UTF-8:${notes}`, // Tüm bilgiler Notlarda yedek
                 "END:VCARD"
             ];
-            const blob = new Blob([vcardLines.join("\r\n")], { type: "text/vcard;charset=utf-8" });
+            
+            // Boş satırları temizle
+            const finalVcard = vcardLines.filter(line => line !== "").join("\r\n");
+
+            const blob = new Blob([finalVcard], { type: "text/vcard;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
@@ -428,6 +520,7 @@
             valSet('inName', cardData.name);
             valSet('inTitle', cardData.title);
             valSet('inPhone', cardData.phone);
+            valSet('inIban', cardData.iban);
             valSet('inEmail', cardData.email);
             valSet('inWhats', cardData.whats);
             valSet('inWeb', cardData.web);
@@ -446,11 +539,10 @@
             btn.innerText = "KAYDEDİLİYOR...";
             btn.disabled = true;
 
-            // DÜZELTME: "&not=" parametresini elle yazıyoruz, encode sorunu olmasın diye
             const folderStr = [
                 encodeSafe(val('inWeb')),
                 encodeSafe(val('inEmail')),
-                "encrypted",
+                encodeSafe(val('inIban')),
                 encodeSafe(val('inTitle')),
                 encodeSafe(val('inPhone')),
                 encodeSafe(val('inWhats')),
@@ -461,10 +553,9 @@
                 encodeSafe(val('inFacebook'))
             ].join("|||");
 
-            // URL DÜZELTME: &not= parametresi eklendi ve bozuk karakter temizlendi
             const finalUrl = API_URL + "?action=save&id=" + currentID + 
                              "&title=" + encodeURIComponent(name) + 
-                             "&not=&folder=" + encodeURIComponent(folderStr) + 
+                             "¬=&folder=" + encodeURIComponent(folderStr) + 
                              "&ses=";
 
             fetch(finalUrl)
@@ -488,12 +579,9 @@
         function decodeSafe(s) { try { return decodeURIComponent(s); } catch(e){ return s; } }
         function normalizeTel(t) { return (t||"").replace(/[^\d]/g,'').replace(/^0/,'90'); }
         
-        // YENİ FONKSİYON: HTTP kontrolü yapar, yoksa ekler
         function ensureHttp(url) {
             if (!url) return "";
-            if (!/^https?:\/\//i.test(url)) {
-                return 'https://' + url;
-            }
+            if (!/^https?:\/\//i.test(url)) return 'https://' + url;
             return url;
         }
 
