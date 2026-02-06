@@ -128,9 +128,7 @@
         .btn-gold i { color: #000; margin-right: 10px; }
         .btn-gold span { font-weight: 700; font-size: 16px; }
 
-        /* IBAN Butonu Özel Stili (İsteğe bağlı, şu an standart btn kullanıyor) */
-        
-        /* TOAST BİLDİRİM (IBAN Kopyalandı için) */
+        /* TOAST BİLDİRİM */
         #toast {
             visibility: hidden; min-width: 250px; background-color: var(--gold); color: #000;
             text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 10000;
@@ -187,7 +185,7 @@
 <body>
 
     <div id="loader"><div class="spinner"></div></div>
-    <div id="toast"><i class="fas fa-check-circle"></i> IBAN Kopyalandı!</div>
+    <div id="toast"><i class="fas fa-check-circle"></i> İşlem Başarılı!</div>
 
     <div class="wrapper" id="cardView" style="display:none;">
         
@@ -269,7 +267,7 @@
             
             <div class="input-group">
                 <span class="label">Ad Soyad</span>
-                <input type="text" id="inName" class="input" placeholder="Ahmet Yılmaz">
+                <input type="text" id="inName" class="input" placeholder="Ad ve Soyad">
             </div>
 
             <div class="input-group">
@@ -336,7 +334,7 @@
     </div>
 
     <script>
-        // APP SCRIPT URL'NİZİ BURAYA YAPIŞTIRIN
+        // APP SCRIPT URL (MEVCUT)
         const API_URL = "https://script.google.com/macros/s/AKfycbyvtvYWLmkq8AqmCEhf_FP5fYLaliFpz_p-Jx4_miEM1vgCvHIM8qDS06A5kKP9F6W0ZA/exec";
         
         const urlParams = new URLSearchParams(window.location.search);
@@ -361,13 +359,13 @@
                     openSetup();
                 } else {
                     document.getElementById('cardView').style.display = 'flex';
-                    // Verileri temizleyerek alıyoruz (¬= temizliği)
-                    let rawFolder = (data.folder || "").replace(/¬=/g, "").replace(/==/g, "");
+                    // TEMİZLİK: Gelen verideki ¬= işaretlerini temizle
+                    let cleanTitle = (data.title || "").replace(/¬=/g, "").replace(/¬/g, "").trim();
+                    let rawFolder = (data.folder || "").replace(/¬=/g, "").replace(/¬/g, "");
                     const parts = rawFolder.split("|||");
                     
-                    // YAPILANDIRMA: [Web, Email, IBAN, Title, Phone, Whats, Insta, Linkedin, Map, Img, Facebook]
                     cardData = {
-                        name: data.title,
+                        name: cleanTitle,
                         web: decodeSafe(parts[0]),
                         email: decodeSafe(parts[1]),
                         iban: decodeSafe(parts[2]), 
@@ -393,7 +391,6 @@
             document.getElementById('vName').innerText = cardData.name || "İsimsiz";
             document.getElementById('vTitle').innerText = cardData.title || "";
             
-            // Baş harf hesapla (Resim yoksa kullanmak için)
             const initials = (cardData.name || "U").split(" ").map(n=>n[0]).join("").substring(0,2).toUpperCase();
             document.getElementById('vInitials').innerText = initials;
 
@@ -410,14 +407,12 @@
                 document.getElementById('vInitials').style.display = 'flex';
             }
 
-            // IBAN Gösterimi
             if(cardData.iban && cardData.iban.length > 5) {
                 document.getElementById('btnIban').style.display = 'flex';
             } else {
                 document.getElementById('btnIban').style.display = 'none';
             }
 
-            // Diğer Butonlar
             showBtn('btnCall', cardData.phone, `tel:${normalizeTel(cardData.phone)}`);
             if(cardData.phone) document.getElementById('lblCall').innerText = cardData.phone;
 
@@ -439,71 +434,70 @@
             });
         }
 
-        // IBAN KOPYALAMA
         function copyIban() {
             if(!cardData.iban) return;
-            // Modern panoya kopyalama
             if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(cardData.iban).then(showToast);
+                navigator.clipboard.writeText(cardData.iban).then(() => showToast("IBAN Kopyalandı!"));
             } else {
-                // Eski yöntem (Fallback)
                 const textArea = document.createElement("textarea");
                 textArea.value = cardData.iban;
                 textArea.style.position = "fixed";
                 document.body.appendChild(textArea);
                 textArea.focus();
                 textArea.select();
-                try { document.execCommand('copy'); showToast(); } catch (err) {}
+                try { document.execCommand('copy'); showToast("IBAN Kopyalandı!"); } catch (err) {}
                 document.body.removeChild(textArea);
             }
         }
 
-        function showToast() {
+        function showToast(msg) {
             var x = document.getElementById("toast");
+            x.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
             x.className = "show";
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
 
-        // REHBERE KAYDET (GELİŞTİRİLMİŞ vCARD)
+        // GELİŞTİRİLMİŞ vCard (Ad Soyad Ayrımı)
         function downloadVCard() {
             if(!cardData.name) return;
             
-            // İsimleri ayır (iPhone'da düzgün görünmesi için)
-            const parts = cardData.name.trim().split(" ");
-            const firstName = parts.length > 1 ? parts.slice(0, -1).join(" ") : parts[0];
-            const lastName = parts.length > 1 ? parts[parts.length - 1] : "";
+            // Ad ve Soyadı ayırma mantığı
+            const fullName = cardData.name.trim();
+            const lastSpaceIndex = fullName.lastIndexOf(" ");
+            let firstName = "";
+            let lastName = "";
 
-            // vCard 3.0 Standardı - iPhone Uyumlu
-            // iPhone'da sosyal medya linkleri genellikle NOTLAR kısmında veya URL olarak görünür.
-            // Bu yüzden garantilemek için hem URL hem NOT olarak ekliyoruz.
-            
+            if (lastSpaceIndex > 0) {
+                firstName = fullName.substring(0, lastSpaceIndex);
+                lastName = fullName.substring(lastSpaceIndex + 1);
+            } else {
+                firstName = fullName; // Soyad yoksa hepsi isim
+            }
+
             let notes = "";
             if(cardData.iban) notes += `IBAN: ${cardData.iban}\n`;
             if(cardData.insta) notes += `Instagram: ${cardData.insta}\n`;
-            if(cardData.linkedin) notes += `LinkedIn: ${cardData.linkedin}\n`;
 
             const vcardLines = [
                 "BEGIN:VCARD", "VERSION:3.0", "CHARSET:UTF-8",
+                // N: Soyad;Ad;OrtaAd;Ünvan;Ek
                 `N;CHARSET=UTF-8:${lastName};${firstName};;;`,
                 `FN;CHARSET=UTF-8:${cardData.name}`,
                 `TITLE;CHARSET=UTF-8:${cardData.title || ""}`,
-                `ORG;CHARSET=UTF-8:${cardData.title || ""}`, // iPhone için Firma yerine Ünvanı da yazıyoruz
+                `ORG;CHARSET=UTF-8:${cardData.title || ""}`,
                 `TEL;TYPE=CELL,VOICE:${cardData.phone || ""}`,
                 `TEL;TYPE=WORK,VOICE:${cardData.whats || ""}`,
                 `EMAIL;TYPE=WORK,INTERNET:${cardData.email || ""}`,
                 `URL;TYPE=WORK:${ensureHttp(cardData.web || window.location.href)}`,
                 `ADR;TYPE=WORK;CHARSET=UTF-8:;;${cardData.map || ""};;;;`,
-                // Sosyal Medya Linklerini "URL" olarak ekliyoruz ki tıklanabilir olsun
                 cardData.insta ? `URL;TYPE=Instagram:${ensureHttp(cardData.insta)}` : "",
                 cardData.linkedin ? `URL;TYPE=LinkedIn:${ensureHttp(cardData.linkedin)}` : "",
                 cardData.facebook ? `URL;TYPE=Facebook:${ensureHttp(cardData.facebook)}` : "",
-                `NOTE;CHARSET=UTF-8:${notes}`, // Tüm bilgiler Notlarda yedek
+                `NOTE;CHARSET=UTF-8:${notes}`,
                 "END:VCARD"
             ];
             
-            // Boş satırları temizle
             const finalVcard = vcardLines.filter(line => line !== "").join("\r\n");
-
             const blob = new Blob([finalVcard], { type: "text/vcard;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -553,9 +547,10 @@
                 encodeSafe(val('inFacebook'))
             ].join("|||");
 
+            // ÖNEMLİ: ¬= işaretini URL'den tamamen kaldırdım, yerine boş not parametresi (&not=)
             const finalUrl = API_URL + "?action=save&id=" + currentID + 
                              "&title=" + encodeURIComponent(name) + 
-                             "¬=&folder=" + encodeURIComponent(folderStr) + 
+                             "&not=&folder=" + encodeURIComponent(folderStr) + 
                              "&ses=";
 
             fetch(finalUrl)
