@@ -14,10 +14,8 @@
             --bg-body: #050505;
             --bg-surface: #141414;
             --gold: #D4AF37;
-            --gold-glow: rgba(212, 175, 55, 0.4);
             --text-primary: #ffffff;
             --text-secondary: #9ca3af;
-            --border: rgba(255, 255, 255, 0.08);
             --btn-height: 56px;
         }
 
@@ -32,15 +30,13 @@
             min-height: 100vh;
             width: 100%;
             overflow-x: hidden;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
             display: flex; justify-content: center;
             background-image: radial-gradient(circle at 50% 0%, #1e1e1e 0%, #000000 70%);
         }
 
         #loader {
             position: fixed; inset: 0; background: #000; z-index: 9999;
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            display: flex; align-items: center; justify-content: center;
         }
         .spinner {
             width: 40px; height: 40px; border: 2px solid #333;
@@ -53,9 +49,7 @@
             width: 100%; max-width: 420px;
             padding: 40px 24px;
             display: flex; flex-direction: column; align-items: center;
-            animation: fadeIn 0.6s ease-out;
-            overflow-y: auto;
-            padding-bottom: 120px;
+            overflow-y: auto; padding-bottom: 120px;
         }
 
         .profile-area { text-align: center; margin-bottom: 35px; width: 100%; }
@@ -64,75 +58,56 @@
             width: 120px; height: 120px; margin: 0 auto 20px;
             border-radius: 50%; padding: 3px;
             background: linear-gradient(135deg, var(--gold), #8a6e18);
-            box-shadow: 0 0 30px var(--gold-glow);
-            position: relative;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
             overflow: hidden;
         }
-        
-        .avatar {
-            width: 100%; height: 100%; object-fit: cover;
-            border-radius: 50%; border: 4px solid var(--bg-body);
-            background: #222;
-        }
-
+        .avatar { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; background: #222; }
         .avatar-fallback {
             display: flex; align-items: center; justify-content: center;
             width: 100%; height: 100%; background: #222; color: var(--gold);
             font-size: 40px; font-weight: 700; border-radius: 50%;
         }
 
-        .name {
-            font-size: 28px; font-weight: 700; margin: 0;
-            background: linear-gradient(to right, #fff, #ccc);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        .title {
-            font-size: 14px; color: var(--gold);
-            margin-top: 8px; font-weight: 500;
-            text-transform: uppercase; letter-spacing: 1.5px;
-        }
+        .name { font-size: 28px; font-weight: 700; margin: 0; text-align: center; }
+        .title { font-size: 14px; color: var(--gold); margin-top: 8px; text-transform: uppercase; letter-spacing: 1.5px; text-align: center; }
 
         .btn-group { width: 100%; display: flex; flex-direction: column; gap: 12px; }
 
         .btn {
             width: 100%; height: var(--btn-height);
             background: var(--bg-surface);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
             display: flex; align-items: center; padding: 0 20px;
             color: var(--text-primary); text-decoration: none;
-            transition: transform 0.1s, background 0.2s;
-            position: relative; overflow: hidden;
             cursor: pointer;
         }
-        .btn:active { transform: scale(0.98); background: #1f1f1f; }
-        .btn i { font-size: 20px; width: 28px; text-align: center; color: var(--text-secondary); margin-right: 16px; }
-        .btn span { font-size: 15px; font-weight: 500; letter-spacing: 0.3px; }
-
+        .btn i { font-size: 20px; width: 28px; text-align: center; color: #9ca3af; margin-right: 16px; }
+        
         .btn-gold {
             background: linear-gradient(135deg, #D4AF37, #C5A028);
-            border: none; color: #000;
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
-            margin-bottom: 10px; justify-content: center;
+            border: none; color: #000; justify-content: center;
+            font-weight: 700;
         }
-        .btn-gold:active { transform: scale(0.96); filter: brightness(0.9); }
-        .btn-gold i { color: #000; margin-right: 10px; }
-        .btn-gold span { font-weight: 700; font-size: 16px; }
+        .btn-gold i { color: #000; }
 
-        /* IBAN BUTONLARI (Koyu Tema) */
         .btn-iban {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 255, 255, 0.1);
         }
         .btn-iban i { color: var(--gold); }
 
+        .section-title {
+            color: var(--gold); font-size: 12px; letter-spacing: 1px;
+            margin-top: 25px; margin-bottom: 10px; width: 100%; text-align: center;
+            opacity: 0.8; text-transform: uppercase;
+        }
+
         #toast {
             visibility: hidden; min-width: 250px; background-color: var(--gold); color: #000;
             text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 10000;
-            left: 50%; bottom: 30px; transform: translateX(-50%); font-weight: 700; font-size: 14px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
+            left: 50%; bottom: 30px; transform: translateX(-50%); font-weight: 700;
+            opacity: 0; transition: 0.3s;
         }
         #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
@@ -140,14 +115,11 @@
             margin-top: 40px; width: 100%;
             display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
-        .qr-frame {
-            padding: 15px; background: #fff; border-radius: 16px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
-        }
+        .qr-frame { padding: 15px; background: #fff; border-radius: 16px; }
         .edit-trigger {
             font-size: 12px; color: #444; cursor: pointer;
             display: none; align-items: center; gap: 6px;
-            padding: 8px 16px; border-radius: 20px; transition: color 0.3s;
+            padding: 8px 16px; border-radius: 20px;
         }
         .branding { font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
 
@@ -161,22 +133,9 @@
         .setup-title { color: var(--gold); font-size: 22px; margin-bottom: 30px; text-align: center; }
         
         .input-group { margin-bottom: 20px; width: 100%; }
-        .label { display: block; font-size: 13px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        
-        .input {
-            width: 100%; height: 54px; background: #111; border: 1px solid #333;
-            border-radius: 12px; padding: 0 16px; color: #fff; font-family: inherit; font-size: 16px;
-        }
-        .input::placeholder { color: #444; }
-        .input:focus { border-color: var(--gold); }
-
-        .save-btn {
-            width: 100%; height: 56px; background: var(--gold); border: none;
-            border-radius: 12px; color: #000; font-weight: 700; font-size: 16px;
-            margin-top: 20px; cursor: pointer;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .label { display: block; font-size: 13px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        .input { width: 100%; height: 54px; background: #111; border: 1px solid #333; border-radius: 12px; padding: 0 16px; color: #fff; }
+        .save-btn { width: 100%; height: 56px; background: var(--gold); border: none; border-radius: 12px; color: #000; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -185,10 +144,9 @@
     <div id="toast"><i class="fas fa-check-circle"></i> Kopyalandı!</div>
 
     <div class="wrapper" id="cardView" style="display:none;">
-        
         <div class="profile-area">
             <div class="avatar-box">
-                <img id="vImg" class="avatar" src="" alt="Avatar" onerror="this.style.display='none'; document.getElementById('vInitials').style.display='flex';">
+                <img id="vImg" class="avatar" src="" onerror="this.style.display='none'; document.getElementById('vInitials').style.display='flex';">
                 <div id="vInitials" class="avatar-fallback" style="display:none;"></div>
             </div>
             <h1 id="vName" class="name"></h1>
@@ -197,166 +155,116 @@
 
         <div class="btn-group">
             <button onclick="downloadVCard()" class="btn btn-gold">
-                <i class="fas fa-user-plus"></i>
-                <span>Rehbere Kaydet</span>
+                <i class="fas fa-user-plus"></i> Rehbere Kaydet
             </button>
 
-            <a id="btnCall" href="#" class="btn">
-                <i class="fas fa-phone"></i>
-                <span id="lblCall">...</span>
-            </a>
+            <a id="btnCall" href="#" class="btn"><i class="fas fa-phone"></i> <span id="lblCall">...</span></a>
+            <a id="btnWa" href="#" target="_blank" class="btn"><i class="fab fa-whatsapp"></i> <span>WhatsApp</span></a>
+            <a id="btnEmail" href="#" class="btn"><i class="fas fa-envelope"></i> <span>E-Posta</span></a>
+            <a id="btnInsta" href="#" target="_blank" class="btn"><i class="fab fa-instagram"></i> <span>Instagram</span></a>
+            <a id="btnLinkedin" href="#" target="_blank" class="btn"><i class="fab fa-linkedin-in"></i> <span>LinkedIn</span></a>
+            <a id="btnFacebook" href="#" target="_blank" class="btn"><i class="fab fa-facebook-f"></i> <span>Facebook</span></a>
+            <a id="btnWeb" href="#" target="_blank" class="btn"><i class="fas fa-globe"></i> <span>Web Sitesi</span></a>
+            <a id="btnMap" href="#" target="_blank" class="btn"><i class="fas fa-location-dot"></i> <span>Konum / Adres</span></a>
 
-            <a id="btnWa" href="#" target="_blank" class="btn">
-                <i class="fab fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
+            <div id="companySection" style="display:none; width:100%; flex-direction:column; gap:12px;">
+                <div class="section-title">- ŞİRKET İŞLEMLERİ -</div>
+                
+                <button id="btnTax" class="btn" onclick="copyTaxInfo()" style="display:none;">
+                    <i class="fas fa-file-invoice"></i> <span>Fatura Bilgilerini Kopyala</span>
+                </button>
 
-            <a id="btnEmail" href="#" class="btn">
-                <i class="fas fa-envelope"></i>
-                <span>E-Posta Gönder</span>
-            </a>
+                <a id="btnCatalog" href="#" target="_blank" class="btn" style="display:none;">
+                    <i class="fas fa-book-open"></i> <span>Katalog / Menü / Portfolyo</span>
+                </a>
 
-            <a id="btnInsta" href="#" target="_blank" class="btn">
-                <i class="fab fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
+                <a id="btnReview" href="#" target="_blank" class="btn" style="display:none;">
+                    <i class="fas fa-star"></i> <span>Google Yorumları / Puanla</span>
+                </a>
 
-            <a id="btnLinkedin" href="#" target="_blank" class="btn">
-                <i class="fab fa-linkedin-in"></i>
-                <span>LinkedIn</span>
-            </a>
+                <a id="btnPay" href="#" target="_blank" class="btn" style="display:none;">
+                    <i class="fas fa-wallet"></i> <span>Alternatif Ödeme (Kripto/Link)</span>
+                </a>
 
-            <a id="btnFacebook" href="#" target="_blank" class="btn">
-                <i class="fab fa-facebook-f"></i>
-                <span>Facebook</span>
-            </a>
+                <a id="btnBook" href="#" target="_blank" class="btn" style="display:none;">
+                    <i class="fas fa-calendar-check"></i> <span>Randevu Al</span>
+                </a>
+            </div>
 
-            <a id="btnWeb" href="#" target="_blank" class="btn">
-                <i class="fas fa-globe"></i>
-                <span>Web Sitesi</span>
-            </a>
+            <div class="section-title">- PAYLAŞIM VE BANKA -</div>
 
-            <a id="btnMap" href="#" target="_blank" class="btn">
-                <i class="fas fa-location-dot"></i>
-                <span>Konum / Adres</span>
-            </a>
+            <button class="btn" onclick="shareCard()">
+                <i class="fas fa-share-alt"></i> <span>Kartı Paylaş</span>
+            </button>
 
-            <a id="btnMap" href="#" target="_blank" class="btn">
-                <i class="fas fa-location-dot"></i>
-                <span>V-card</span>
-            </a>
-
-            <div id="ibanSection" style="display:none; width:100%; flex-direction:column; gap:12px; margin-top:10px;">
+            <div id="ibanSection" style="display:none; width:100%; flex-direction:column; gap:12px;">
                 <button class="btn btn-iban" onclick="copyText(cardData.iban, 'IBAN Kopyalandı!')">
-                    <i class="fas fa-credit-card"></i>
-                    <span>IBAN Kopyala</span>
+                    <i class="fas fa-credit-card"></i> <span>IBAN Kopyala</span>
                 </button>
                 <button class="btn btn-iban" onclick="copyText(cardData.ibanName, 'Alıcı Adı Kopyalandı!')">
-                    <i class="fas fa-user-tag"></i>
-                    <span id="lblIbanName">Alıcı Adını Kopyala</span>
+                    <i class="fas fa-user-tag"></i> <span id="lblIbanName">Alıcı Adını Kopyala</span>
                 </button>
             </div>
         </div>
 
         <div class="bottom-area">
-            <div class="qr-frame">
-                <div id="qrcode"></div>
-            </div>
+            <div class="qr-frame"><div id="qrcode"></div></div>
             <div id="adminEdit" class="edit-trigger" onclick="openSetup()">
                 <i class="fas fa-pen"></i> Düzenle
             </div>
-            <div class="branding">POWERED BY FTHLABZ®</div>
+            <div class="branding">SECURE DIGITAL CARD</div>
         </div>
     </div>
 
     <div id="setupPanel">
         <div class="setup-content">
-            <h2 class="setup-title">PROFİL BİLGİLERİ</h2>
+            <h2 class="setup-title">PROFİL VE ŞİRKET</h2>
             
-            <div class="input-group">
-                <span class="label">Ad Soyad</span>
-                <input type="text" id="inName" class="input" placeholder="Ahmet Yılmaz">
-            </div>
+            <div class="input-group"><span class="label">Ad Soyad</span><input type="text" id="inName" class="input"></div>
+            <div class="input-group"><span class="label">Kısa Ünvan (Profilde Görünür)</span><input type="text" id="inTitle" class="input"></div>
+            <div class="input-group"><span class="label">Telefon</span><input type="tel" id="inPhone" class="input"></div>
+            <div class="input-group"><span class="label">WhatsApp (Farklıysa)</span><input type="tel" id="inWhats" class="input"></div>
+            <div class="input-group"><span class="label">E-Posta</span><input type="email" id="inEmail" class="input"></div>
+            <div class="input-group"><span class="label">Web Sitesi</span><input type="text" id="inWeb" class="input"></div>
+            <div class="input-group"><span class="label">Resim Linki</span><input type="text" id="inImg" class="input"></div>
 
-            <div class="input-group">
-                <span class="label">Ünvan / Meslek</span>
-                <input type="text" id="inTitle" class="input" placeholder="Genel Müdür">
-            </div>
+            <div style="border-top:1px solid #333; margin:20px 0;"></div>
+            <p style="color:var(--gold); text-align:center; font-size:12px;">FATURA BİLGİLERİ</p>
+            
+            <div class="input-group"><span class="label">Resmi Şirket Adı (Unvan)</span><input type="text" id="inCompName" class="input" placeholder="Örn: FTH Bilişim Ltd. Şti."></div>
+            <div class="input-group"><span class="label">Vergi Dairesi</span><input type="text" id="inTaxOffice" class="input"></div>
+            <div class="input-group"><span class="label">Vergi Numarası</span><input type="text" id="inTaxNo" class="input"></div>
 
-            <div class="input-group">
-                <span class="label">Telefon Numarası</span>
-                <input type="tel" id="inPhone" class="input" placeholder="05XX XXX XX XX">
-            </div>
+            <div style="border-top:1px solid #333; margin:20px 0;"></div>
+            <p style="color:var(--gold); text-align:center; font-size:12px;">EKSTRA LİNKLER</p>
 
-            <div class="input-group">
-                <span class="label">E-Posta Adresi</span>
-                <input type="email" id="inEmail" class="input" placeholder="isim@sirket.com">
-            </div>
+            <div class="input-group"><span class="label">Katalog / Menü Linki</span><input type="text" id="inCatalog" class="input"></div>
+            <div class="input-group"><span class="label">Google Yorum Linki</span><input type="text" id="inReview" class="input"></div>
+            <div class="input-group"><span class="label">Ödeme Linki (Shopier/Kripto)</span><input type="text" id="inPay" class="input"></div>
+            <div class="input-group"><span class="label">Randevu Linki</span><input type="text" id="inBook" class="input"></div>
 
-            <div class="input-group">
-                <span class="label">WhatsApp (Farklıysa)</span>
-                <input type="tel" id="inWhats" class="input" placeholder="05XX XXX XX XX">
-            </div>
-
-            <div class="input-group">
-                <span class="label">Web Sitesi</span>
-                <input type="text" id="inWeb" class="input" placeholder="www.sirket.com">
-            </div>
-
-            <div class="input-group">
-                <span class="label">Profil Resmi (Link)</span>
-                <input type="text" id="inImg" class="input" placeholder="https://...">
-            </div>
-
-            <div class="input-group">
-                <span class="label">V-card link (Link)</span>
-                <input type="text" id="inImg" class="input" placeholder="https://...">
-            </div>
-
-            <div style="border-top:1px solid #222; margin: 25px 0;"></div>
-            <p style="color:var(--gold); font-size:12px; margin-bottom:20px; text-align:center;">BANKA BİLGİLERİ</p>
-
-            <div class="input-group">
-                <span class="label">IBAN Numarası (TR...)</span>
-                <input type="text" id="inIban" class="input" placeholder="TRXX 0000...">
-            </div>
-
-            <div class="input-group">
-                <span class="label">IBAN Alıcı Adı (Ad Soyad / Şirket)</span>
-                <input type="text" id="inIbanName" class="input" placeholder="Örn: Yılmaz A.Ş.">
-            </div>
-
-            <div style="border-top:1px solid #222; margin: 25px 0;"></div>
-            <p style="color:#666; font-size:12px; margin-bottom:20px; text-align:center;">SOSYAL MEDYA LİNKLERİ</p>
-
-            <div class="input-group">
-                <span class="label">Instagram Linki</span>
-                <input type="text" id="inInsta" class="input" placeholder="https://instagram.com/...">
-            </div>
-
-            <div class="input-group">
-                <span class="label">LinkedIn Linki</span>
-                <input type="text" id="inLinkedin" class="input" placeholder="https://linkedin.com/in/...">
-            </div>
-
-            <div class="input-group">
-                <span class="label">Facebook Linki</span>
-                <input type="text" id="inFacebook" class="input" placeholder="https://facebook.com/...">
-            </div>
-
-            <div class="input-group">
-                <span class="label">Konum Linki (Maps)</span>
-                <input type="text" id="inMap" class="input" placeholder="http://googleusercontent.com/maps...">
-            </div>
+            <div style="border-top:1px solid #333; margin:20px 0;"></div>
+            <p style="color:var(--gold); text-align:center; font-size:12px;">BANKA & SOSYAL</p>
+            
+            <div class="input-group"><span class="label">IBAN</span><input type="text" id="inIban" class="input"></div>
+            <div class="input-group"><span class="label">IBAN Alıcı Adı</span><input type="text" id="inIbanName" class="input"></div>
+            <div class="input-group"><span class="label">Instagram</span><input type="text" id="inInsta" class="input"></div>
+            <div class="input-group"><span class="label">LinkedIn</span><input type="text" id="inLinkedin" class="input"></div>
+            <div class="input-group"><span class="label">Facebook</span><input type="text" id="inFacebook" class="input"></div>
+            <div class="input-group"><span class="label">Harita Linki</span><input type="text" id="inMap" class="input"></div>
 
             <button onclick="saveData()" class="save-btn">KAYDET VE YAYINLA</button>
-            <button onclick="document.getElementById('setupPanel').style.display='none'" style="width:100%; background:none; border:none; color:#666; padding:15px; margin-top:10px; font-size:14px;">Vazgeç</button>
+            <button onclick="document.getElementById('setupPanel').style.display='none'" style="width:100%; background:none; border:none; color:#666; padding:15px; margin-top:10px;">Vazgeç</button>
         </div>
     </div>
 
     <script>
+        // ================================================================
+        // BURAYA KENDİ GOOGLE APPS SCRIPT URL'Nİ YAPIŞTIR
+        // ================================================================
         const API_URL = "https://script.google.com/macros/s/AKfycbyvtvYWLmkq8AqmCEhf_FP5fYLaliFpz_p-Jx4_miEM1vgCvHIM8qDS06A5kKP9F6W0ZA/exec";
-        
+        // ================================================================
+
         const urlParams = new URLSearchParams(window.location.search);
         let currentID = urlParams.get('id');
         let cardData = {};
@@ -379,13 +287,12 @@
                     openSetup();
                 } else {
                     document.getElementById('cardView').style.display = 'flex';
-                    // TEMİZLİK: Eski verilerdeki tüm ¬= ve benzeri artıkları temizle
-                    let cleanTitle = (data.title || "").replace(/¬=/g, "").replace(/¬/g, "").replace(/=/g, "").trim();
+                    
+                    let cleanTitle = (data.title || "").replace(/¬=/g, "").replace(/¬/g, "").trim();
                     let rawFolder = (data.folder || "").replace(/¬=/g, "").replace(/¬/g, "");
                     const parts = rawFolder.split("|||");
                     
-                    // YAPILANDIRMA: 
-                    // 0:Web, 1:Email, 2:IBAN, 3:Title, 4:Phone, 5:Whats, 6:Insta, 7:Linkedin, 8:Map, 9:Img, 10:Facebook, 11:IbanName
+                    // --- VERİ OKUMA ---
                     cardData = {
                         name: cleanTitle,
                         web: decodeSafe(parts[0]),
@@ -399,15 +306,27 @@
                         map: decodeSafe(parts[8]),
                         img: decodeSafe(parts[9]),
                         facebook: decodeSafe(parts[10]),
-                        ibanName: decodeSafe(parts[11]) // YENİ: Alıcı Adı
+                        ibanName: decodeSafe(parts[11]),
+                        // YENİ EKLENENLER (Sırayla)
+                        compName: decodeSafe(parts[12]),
+                        taxOffice: decodeSafe(parts[13]),
+                        taxNo: decodeSafe(parts[14]),
+                        catalog: decodeSafe(parts[15]),
+                        review: decodeSafe(parts[16]),
+                        pay: decodeSafe(parts[17]),
+                        book: decodeSafe(parts[18])
                     };
                     renderView();
+                    
                     if (localStorage.getItem('admin_' + currentID) === "1") {
                         document.getElementById('adminEdit').style.display = 'flex';
                     }
                 }
             })
-            .catch(e => alert("Bağlantı hatası"));
+            .catch(e => {
+                alert("Bağlantı hatası");
+                document.getElementById('loader').style.display = 'none';
+            });
         }
 
         function renderView() {
@@ -430,17 +349,15 @@
                 document.getElementById('vInitials').style.display = 'flex';
             }
 
-            // IBAN VE ALICI ADI GÖSTERİMİ (EN ALTTA)
+            // IBAN Gösterimi
             if(cardData.iban && cardData.iban.length > 5) {
                 document.getElementById('ibanSection').style.display = 'flex';
-                // Alıcı adı varsa göster, yoksa butonu gizle
-                if(cardData.ibanName && cardData.ibanName.length > 1) {
-                   document.getElementById('lblIbanName').innerText = "Alıcı: " + cardData.ibanName;
-                }
+                if(cardData.ibanName) document.getElementById('lblIbanName').innerText = "Alıcı: " + cardData.ibanName;
             } else {
                 document.getElementById('ibanSection').style.display = 'none';
             }
 
+            // Butonları Göster/Gizle
             showBtn('btnCall', cardData.phone, `tel:${normalizeTel(cardData.phone)}`);
             if(cardData.phone) document.getElementById('lblCall').innerText = cardData.phone;
 
@@ -453,6 +370,21 @@
             showBtn('btnWeb', cardData.web, ensureHttp(cardData.web));
             showBtn('btnMap', cardData.map, ensureHttp(cardData.map));
 
+            // ŞİRKET BÖLÜMÜ KONTROLÜ
+            const hasCompanyInfo = cardData.compName || cardData.catalog || cardData.review || cardData.pay || cardData.book;
+            if(hasCompanyInfo) {
+                document.getElementById('companySection').style.display = 'flex';
+                // Fatura Butonu (Sadece bilgi varsa göster)
+                if(cardData.compName) document.getElementById('btnTax').style.display = 'flex';
+                // Diğer Linkler
+                showBtn('btnCatalog', cardData.catalog, ensureHttp(cardData.catalog));
+                showBtn('btnReview', cardData.review, ensureHttp(cardData.review));
+                showBtn('btnPay', cardData.pay, ensureHttp(cardData.pay));
+                showBtn('btnBook', cardData.book, ensureHttp(cardData.book));
+            } else {
+                document.getElementById('companySection').style.display = 'none';
+            }
+
             document.getElementById("qrcode").innerHTML = "";
             new QRCode(document.getElementById("qrcode"), {
                 text: window.location.href,
@@ -462,89 +394,7 @@
             });
         }
 
-        function copyText(text, msg) {
-            if(!text) return;
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text).then(() => showToast(msg));
-            } else {
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.position = "fixed";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try { document.execCommand('copy'); showToast(msg); } catch (err) {}
-                document.body.removeChild(textArea);
-            }
-        }
-
-        function showToast(msg) {
-            var x = document.getElementById("toast");
-            x.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
-            x.className = "show";
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-        }
-
-        // SADELEŞTİRİLMİŞ vCard (iPhone için Temiz Görünüm)
-        function downloadVCard() {
-            if(!cardData.name) return;
-            
-            const fullName = cardData.name.trim();
-            const lastSpaceIndex = fullName.lastIndexOf(" ");
-            let firstName = fullName;
-            let lastName = "";
-            if (lastSpaceIndex > 0) {
-                firstName = fullName.substring(0, lastSpaceIndex);
-                lastName = fullName.substring(lastSpaceIndex + 1);
-            }
-
-            // SADECE GEREKLİ ALANLAR (Tekrar Yok)
-            const vcardLines = [
-                "BEGIN:VCARD", "VERSION:3.0", "CHARSET:UTF-8",
-                `N;CHARSET=UTF-8:${lastName};${firstName};;;`,
-                `FN;CHARSET=UTF-8:${cardData.name}`,
-                //`TITLE;CHARSET=UTF-8:${cardData.title || ""}`,
-                `ORG;CHARSET=UTF-8:${cardData.title || ""}`, // iPhone için şirket yerine ünvan
-                // Sadece 1 tane Telefon (Cep)
-                `TEL;TYPE=CELL:${cardData.phone || ""}`,
-                // Sadece 1 tane Web Sitesi
-                `URL;TYPE=WORK:${ensureHttp(cardData.web || window.location.href)}`,
-                // Sadece 1 tane Adres
-                `ADR;TYPE=WORK;CHARSET=UTF-8:;;${cardData.map || ""};;;;`,
-                // Instagram (Social Profile)
-                cardData.insta ? `X-SOCIALPROFILE;TYPE=instagram:${ensureHttp(cardData.insta)}` : "",
-                "END:VCARD"
-            ];
-            
-            const finalVcard = vcardLines.filter(line => line !== "").join("\r\n");
-            const blob = new Blob([finalVcard], { type: "text/vcard;charset=utf-8" });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute("download", (cardData.name || "contact").replace(/ /g,"_") + ".vcf");
-            if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) { link.target = "_blank"; }
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function openSetup() {
-            document.getElementById('setupPanel').style.display = 'flex';
-            valSet('inName', cardData.name);
-            valSet('inTitle', cardData.title);
-            valSet('inPhone', cardData.phone);
-            valSet('inIban', cardData.iban);
-            valSet('inIbanName', cardData.ibanName); // YENİ
-            valSet('inEmail', cardData.email);
-            valSet('inWhats', cardData.whats);
-            valSet('inWeb', cardData.web);
-            valSet('inImg', cardData.img);
-            valSet('inInsta', cardData.insta);
-            valSet('inLinkedin', cardData.linkedin);
-            valSet('inFacebook', cardData.facebook);
-            valSet('inMap', cardData.map);
-        }
-
+        // --- KAYIT FONKSİYONU ---
         function saveData() {
             const name = val('inName');
             if(!name) return alert("İsim zorunludur.");
@@ -553,20 +403,28 @@
             btn.innerText = "KAYDEDİLİYOR...";
             btn.disabled = true;
 
-            // DİKKAT: 11. indekse (en sona) Alıcı Adını ekledik.
+            // DİKKAT: Sıra bozulmamalı, yeniler sona eklendi
             const folderStr = [
-                encodeSafe(val('inWeb')),
-                encodeSafe(val('inEmail')),
-                encodeSafe(val('inIban')),
-                encodeSafe(val('inTitle')),
-                encodeSafe(val('inPhone')),
-                encodeSafe(val('inWhats')),
-                encodeSafe(val('inInsta')),
-                encodeSafe(val('inLinkedin')),
-                encodeSafe(val('inMap')),
-                encodeSafe(val('inImg')),
-                encodeSafe(val('inFacebook')),
-                encodeSafe(val('inIbanName')) // YENİ SLOT
+                encodeSafe(val('inWeb')),      // 0
+                encodeSafe(val('inEmail')),    // 1
+                encodeSafe(val('inIban')),     // 2
+                encodeSafe(val('inTitle')),    // 3
+                encodeSafe(val('inPhone')),    // 4
+                encodeSafe(val('inWhats')),    // 5
+                encodeSafe(val('inInsta')),    // 6
+                encodeSafe(val('inLinkedin')), // 7
+                encodeSafe(val('inMap')),      // 8
+                encodeSafe(val('inImg')),      // 9
+                encodeSafe(val('inFacebook')), // 10
+                encodeSafe(val('inIbanName')), // 11
+                // --- YENİLER ---
+                encodeSafe(val('inCompName')), // 12 (Şirket Adı)
+                encodeSafe(val('inTaxOffice')),// 13
+                encodeSafe(val('inTaxNo')),    // 14
+                encodeSafe(val('inCatalog')),  // 15
+                encodeSafe(val('inReview')),   // 16
+                encodeSafe(val('inPay')),      // 17
+                encodeSafe(val('inBook'))      // 18
             ].join("|||");
 
             const finalUrl = API_URL + "?action=save&id=" + currentID + 
@@ -579,13 +437,104 @@
             .then(data => {
                 if (data.status === "success") {
                     localStorage.setItem('admin_' + currentID, "1");
+                    alert("Kayıt Başarılı!");
                     location.reload();
                 } else {
                     alert("Hata oluştu.");
                     btn.disabled = false;
                     btn.innerText = "KAYDET VE YAYINLA";
                 }
+            })
+            .catch(e => {
+                alert("Bağlantı hatası: " + e);
+                btn.disabled = false;
             });
+        }
+
+        function openSetup() {
+            document.getElementById('setupPanel').style.display = 'flex';
+            valSet('inName', cardData.name);
+            valSet('inTitle', cardData.title);
+            valSet('inPhone', cardData.phone);
+            valSet('inWhats', cardData.whats);
+            valSet('inEmail', cardData.email);
+            valSet('inWeb', cardData.web);
+            valSet('inImg', cardData.img);
+            valSet('inIban', cardData.iban);
+            valSet('inIbanName', cardData.ibanName);
+            valSet('inInsta', cardData.insta);
+            valSet('inLinkedin', cardData.linkedin);
+            valSet('inFacebook', cardData.facebook);
+            valSet('inMap', cardData.map);
+            // YENİLER
+            valSet('inCompName', cardData.compName);
+            valSet('inTaxOffice', cardData.taxOffice);
+            valSet('inTaxNo', cardData.taxNo);
+            valSet('inCatalog', cardData.catalog);
+            valSet('inReview', cardData.review);
+            valSet('inPay', cardData.pay);
+            valSet('inBook', cardData.book);
+        }
+
+        // --- YARDIMCILAR & AKSİYONLAR ---
+        
+        function copyTaxInfo() {
+            const info = `FATURA BİLGİLERİ:\nUnvan: ${cardData.compName}\nVergi D.: ${cardData.taxOffice}\nVergi No: ${cardData.taxNo}`;
+            copyText(info, 'Fatura Bilgileri Kopyalandı!');
+        }
+
+        function shareCard() {
+            if (navigator.share) {
+                navigator.share({
+                    title: cardData.name,
+                    text: cardData.title,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                copyText(window.location.href, 'Link Kopyalandı!');
+            }
+        }
+
+        function copyText(text, msg) {
+            if(!text) return;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => showToast(msg));
+            } else {
+                const ta = document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; document.body.appendChild(ta); ta.focus(); ta.select(); try{document.execCommand('copy'); showToast(msg);}catch(e){} document.body.removeChild(ta);
+            }
+        }
+        
+        function showToast(msg) {
+            var x = document.getElementById("toast"); x.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; x.className="show"; setTimeout(()=>x.className=x.className.replace("show",""),3000);
+        }
+
+        function downloadVCard() {
+            if(!cardData.name) return;
+            const parts = cardData.name.trim().split(" ");
+            const fn = parts.slice(0, -1).join(" ") || parts[0];
+            const ln = parts.length > 1 ? parts[parts.length-1] : "";
+            
+            let notes = "";
+            if(cardData.iban) notes += `IBAN: ${cardData.iban}\n`;
+            if(cardData.taxNo) notes += `VKN: ${cardData.taxNo} (${cardData.taxOffice})\n`;
+            
+            const vcard = [
+                "BEGIN:VCARD", "VERSION:3.0", "CHARSET:UTF-8",
+                `N;CHARSET=UTF-8:${ln};${fn};;;`,
+                `FN;CHARSET=UTF-8:${cardData.name}`,
+                `ORG;CHARSET=UTF-8:${cardData.title || ""}`,
+                `TEL;TYPE=CELL:${cardData.phone || ""}`,
+                `TEL;TYPE=WORK:${cardData.whats || ""}`,
+                `EMAIL;TYPE=WORK:${cardData.email || ""}`,
+                `URL;TYPE=WORK:${ensureHttp(cardData.web || window.location.href)}`,
+                `ADR;TYPE=WORK;CHARSET=UTF-8:;;${cardData.map || ""};;;;`,
+                cardData.insta ? `X-SOCIALPROFILE;TYPE=instagram:${ensureHttp(cardData.insta)}` : "",
+                `NOTE;CHARSET=UTF-8:${notes}`,
+                "END:VCARD"
+            ].join("\r\n");
+            
+            const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+            const link = document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=(cardData.name).replace(/ /g,"_")+".vcf"; document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
         function val(id) { return document.getElementById(id).value; }
@@ -594,10 +543,7 @@
         function decodeSafe(s) { try { return decodeURIComponent(s); } catch(e){ return s; } }
         function normalizeTel(t) { return (t||"").replace(/[^\d]/g,'').replace(/^0/,'90'); }
         function ensureHttp(url) { if (!url) return ""; if (!/^https?:\/\//i.test(url)) return 'https://' + url; return url; }
-        function showBtn(id, val, href) {
-            const el = document.getElementById(id);
-            if (val && val.length > 2) { el.style.display = 'flex'; el.href = href; } else { el.style.display = 'none'; }
-        }
+        function showBtn(id, val, href) { const el = document.getElementById(id); if (val && val.length > 2) { el.style.display = 'flex'; el.href = href; } else { el.style.display = 'none'; } }
     </script>
 </body>
 </html>
