@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dijital Kartvizit</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --bg-void: #080808;
+            --bg-card: #121212;
+            --gold: #D4AF37;
+            --gold-gradient: linear-gradient(135deg, #D4AF37, #F2E2A6, #C5A028);
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(212, 175, 55, 0.2);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Manrope', sans-serif;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.05), transparent 40%);
+        }
+
+        /* YÜKLENİYOR EKRANI */
+        #loader {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
+        }
+        .loading-line {
+            width: 50px; height: 2px; background: var(--gold);
+            animation: load 1s infinite alternate;
+        }
+        @keyframes load { from { width: 10px; opacity: 0.5; } to { width: 80px; opacity: 1; } }
+
+        /* ANA KAPSAYICI */
+        .card-wrapper {
+            width: 100%; max-width: 420px;
+            min-height: 100vh;
+            padding: 30px 20px;
+            position: relative;
+            background: linear-gradient(180deg, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        /* --- PROFİL ALANI --- */
+        .profile-section {
+            text-align: center; margin-top: 20px; margin-bottom: 30px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .avatar-container {
+            width: 130px; height: 130px; margin: 0 auto 20px;
+            position: relative;
+            padding: 3px;
+            border-radius: 50%;
+            background: var(--gold-gradient); /* Altın Çerçeve */
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+        }
+        
+        .avatar {
+            width: 100%; height: 100%; object-fit: cover;
+            border-radius: 50%; border: 4px solid var(--bg-void);
+            background: #1a1a1a;
+        }
+
+        .user-name {
+            font-family: 'Cinzel', serif; /* Otoriter Font */
+            font-size: 26px; font-weight: 700;
+            margin: 0; letter-spacing: 0.5px;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .user-title {
+            font-size: 13px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 2px;
+            margin-top: 8px; font-weight: 600;
+        }
+
+        /* --- BUTONLAR --- */
+        .actions { display: flex; flex-direction: column; gap: 15px; }
+
+        .btn {
+            display: flex; align-items: center;
+            padding: 18px 20px;
+            border-radius: 12px;
+            text-decoration: none; color: #fff;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .btn:active { transform: scale(0.98); background: rgba(212, 175, 55, 0.1); }
+
+        .btn-icon {
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05); border-radius: 50%;
+            margin-right: 15px; font-size: 16px; color: var(--gold);
+        }
+
+        .btn-text { font-size: 15px; font-weight: 500; letter-spacing: 0.5px; }
+        .btn-arrow { margin-left: auto; font-size: 12px; opacity: 0.4; }
+
+        /* REHBERE KAYDET (Özel) */
+        .btn-save {
+            background: var(--gold-gradient);
+            border: none; color: #000;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+            margin-bottom: 10px;
+        }
+        .btn-save .btn-icon { background: rgba(0,0,0,0.1); color: #000; }
+        .btn-save .btn-text { font-weight: 800; }
+
+        /* QR ALANI */
+        .qr-box {
+            margin-top: 40px; padding: 20px;
+            background: #fff; border-radius: 16px;
+            display: inline-block;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        /* --- DÜZENLEME PANELİ (MODAL) --- */
+        #editPanel {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            padding: 30px 20px; overflow-y: auto; display: none;
+        }
+        .panel-head { font-family: 'Cinzel', serif; color: var(--gold); font-size: 20px; margin-bottom: 30px; text-align: center; }
+        
+        .inp-group { margin-bottom: 20px; }
+        .inp-label { display: block; color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+        .inp {
+            width: 100%; padding: 16px; background: #111; border: 1px solid #333;
+            color: #fff; border-radius: 8px; font-family: 'Manrope', sans-serif; font-size: 14px;
+        }
+        .inp:focus { border-color: var(--gold); }
+        
+        .save-action {
+            width: 100%; padding: 20px; background: var(--gold); color: #000;
+            font-weight: 800; border: none; border-radius: 10px; cursor: pointer;
+            margin-top: 20px; font-size: 16px;
+        }
+
+        /* YÜZER DÜZENLEME BUTONU (Sadece Admin Görür) */
+        .fab-edit {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 50px; height: 50px; background: rgba(30,30,30,0.8);
+            border: 1px solid var(--gold); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gold); cursor: pointer; z-index: 500;
+            backdrop-filter: blur(5px); display: none;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div style="font-family:'Cinzel', serif; color:#D4AF37; letter-spacing:2px; font-size:14px;">PREMIUM CARD</div>
+        <div class="loading-line"></div>
+    </div>
+
+    <div class="card-wrapper" id="cardView" style="display:none;">
+        
+        <div class="profile-section">
+            <div class="avatar-container">
+                <img id="vImg" class="avatar" src="" alt="Profile">
+            </div>
+            <h1 id="vName" class="user-name"></h1>
+            <div id="vTitle" class="user-title"></div>
+        </div>
+
+        <div class="actions">
+            <a href="#" onclick="downloadVCard()" class="btn btn-save">
+                <div class="btn-icon"><i class="fas fa-user-plus"></i></div>
+                <div class="btn-text">REHBERE KAYDET</div>
+                <div class="btn-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <a id="btnCall" href="#" class="btn">
+                <div class="btn-icon"><i class="fas fa-phone"></i></div>
+                <div class="btn-text" id="lblCall">...</div>
+                <div class="btn-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <a id="btnWa" href="#" target="_blank" class="btn">
+                <div class="btn-icon"><i class="fab fa-whatsapp"></i></div>
+                <div class="btn-text">WhatsApp İletişim</div>
+                <div class="btn-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <a id="btnInsta" href="#" target="_blank" class="btn">
+                <div class="btn-icon"><i class="fab fa-instagram"></i></div>
+                <div class="btn-text">Instagram Profili</div>
+                <div class="btn-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <a id="btnMap" href="#" target="_blank" class="btn">
+                <div class="btn-icon"><i class="fas fa-location-dot"></i></div>
+                <div class="btn-text">Ofis / Konum</div>
+                <div class="btn-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            
+             <a id="btnWeb" href="#" target="_blank" class="btn">
+                <div class="btn-icon"><i class="fas fa-globe"></i></div>
+                <div class="btn-text">Web Sitesi</div>
+                <div class="btn-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            
+            <div style="text-align:center; margin-top:20px;">
+                <div id="qrcode" class="qr-box"></div>
+            </div>
+            
+            <div style="text-align:center; color:#333; font-size:9px; margin-top:30px; letter-spacing:1px;">
+                SECURE DIGITAL ID
+            </div>
+        </div>
+    </div>
+
+    <div id="editPanel">
+        <div class="panel-head">KARTVİZİT BİLGİLERİ</div>
+        <p style="text-align:center; color:#666; font-size:12px; margin-bottom:30px;">
+            Lütfen bilgilerinizi eksiksiz doldurun.<br>Bu bilgiler sadece bu cihazda düzenlenebilir.
+        </p>
+
+        <div class="inp-group">
+            <label class="inp-label">Ad Soyad (Ünvan)</label>
+            <input type="text" id="inName" class="inp" placeholder="Örn: Av. Mehmet Yılmaz">
+        </div>
+
+        <div class="inp-group">
+            <label class="inp-label">Meslek / Alt Başlık</label>
+            <input type="text" id="inTitle" class="inp" placeholder="Örn: Ağır Ceza Avukatı">
+        </div>
+
+        <div class="inp-group">
+            <label class="inp-label">Telefon Numarası</label>
+            <input type="tel" id="inPhone" class="inp" placeholder="5XX XXX XX XX">
+        </div>
+
+        <div class="inp-group">
+            <label class="inp-label">WhatsApp Numarası</label>
+            <input type="tel" id="inWhats" class="inp" placeholder="5XX XXX XX XX">
+        </div>
+
+        <div class="inp-group">
+            <label class="inp-label">Instagram Kullanıcı Adı</label>
+            <input type="text" id="inInsta" class="inp" placeholder="@kullanici">
+        </div>
+
+        <div class="inp-group">
+            <label class="inp-label">Profil Resmi Linki</label>
+            <input type="text" id="inImg" class="inp" placeholder="https://...">
+            <div style="font-size:10px; color:#555; margin-top:5px;">Resim linki yoksa boş bırakın.</div>
+        </div>
+
+        <div class="inp-group">
+            <label class="inp-label">Konum Linki (Maps)</label>
+            <input type="text" id="inMap" class="inp" placeholder="Google Maps Linki">
+        </div>
+        
+        <div class="inp-group">
+            <label class="inp-label">Web Sitesi</label>
+            <input type="text" id="inWeb" class="inp" placeholder="www.siteniz.com">
+        </div>
+
+        <button onclick="saveData()" class="save-action">KAYDET VE YAYINLA</button>
+        <button onclick="closeEdit()" style="width:100%; padding:15px; background:transparent; border:none; color:#666; margin-top:10px;">Vazgeç</button>
+    </div>
+
+    <div id="fabEdit" class="fab-edit" onclick="openEdit()">
+        <i class="fas fa-pen"></i>
+    </div>
+
+    <script>
+        // SENİN APP SCRIPT URL'İN:
+        const API_URL = "https://script.google.com/macros/s/AKfycbyvtvYWLmkq8AqmCEhf_FP5fYLaliFpz_p-Jx4_miEM1vgCvHIM8qDS06A5kKP9F6W0ZA/exec";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentID = urlParams.get('id');
+        let cardData = {};
+
+        window.onload = function() {
+            if (!currentID) {
+                alert("Hatalı Link! Lütfen ID içeren linki kullanın (örn: ?id=1001).");
+                return;
+            }
+            loadData();
+        };
+
+        function loadData() {
+            fetch(API_URL + "?action=read&id=" + currentID)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loader').style.display = 'none';
+                
+                // Veri Yoksa -> Düzenleme Panelini Aç
+                if (data.status === "empty") {
+                    document.getElementById('editPanel').style.display = 'block';
+                    return;
+                }
+
+                // Veri Varsa -> Kartı Göster
+                document.getElementById('cardView').style.display = 'block';
+                
+                const parts = (data.folder || "").split("|||");
+                cardData = {
+                    name: data.title,
+                    title: decodeSafe(parts[3]),
+                    phone: decodeSafe(parts[4]),
+                    whats: decodeSafe(parts[5]),
+                    insta: decodeSafe(parts[6]),
+                    map: decodeSafe(parts[8]),
+                    img: decodeSafe(parts[9]),
+                    web: decodeSafe(parts[0]),
+                    email: decodeSafe(parts[13])
+                };
+
+                renderCard();
+
+                // Admin Kontrolü (Bu cihazda daha önce kaydedilmiş mi?)
+                if (localStorage.getItem('admin_' + currentID) === "true") {
+                    document.getElementById('fabEdit').style.display = 'flex';
+                }
+            })
+            .catch(err => alert("Bağlantı Hatası!"));
+        }
+
+        function renderCard() {
+            // İsim ve Ünvan
+            document.getElementById('vName').innerText = cardData.name || "İsimsiz";
+            document.getElementById('vTitle').innerText = cardData.title || "";
+
+            // Resim
+            const imgEl = document.getElementById('vImg');
+            if (cardData.img && cardData.img.length > 5) {
+                 if(cardData.img.includes("drive.google.com")) {
+                    const idMatch = cardData.img.match(/[-\w]{25,}/);
+                    if(idMatch) imgEl.src = "https://lh3.googleusercontent.com/d/" + idMatch[0] + "=s500";
+                } else {
+                    imgEl.src = cardData.img;
+                }
+            } else {
+                // Resim yoksa baş harflerden oluştur
+                imgEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(cardData.name)}&background=D4AF37&color=000&size=256&font-size=0.33`;
+            }
+
+            // Butonlar
+            toggleBtn('btnCall', cardData.phone);
+            if(cardData.phone) { 
+                document.getElementById('btnCall').href = `tel:${normalizeTel(cardData.phone)}`;
+                document.getElementById('lblCall').innerText = cardData.phone;
+            }
+
+            toggleBtn('btnWa', cardData.whats);
+            if(cardData.whats) document.getElementById('btnWa').href = `https://wa.me/${normalizeTel(cardData.whats)}`;
+
+            toggleBtn('btnInsta', cardData.insta);
+            if(cardData.insta) document.getElementById('btnInsta').href = `https://instagram.com/${cardData.insta.replace('@','')}`;
+
+            toggleBtn('btnMap', cardData.map);
+            if(cardData.map) document.getElementById('btnMap').href = cardData.map;
+            
+            toggleBtn('btnWeb', cardData.web);
+            if(cardData.web) document.getElementById('btnWeb').href = cardData.web;
+
+            // QR Kod (Sayfa linki)
+            document.getElementById("qrcode").innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+                text: window.location.href,
+                width: 100, height: 100,
+                colorDark : "#000000", colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.L
+            });
+        }
+
+        function saveData() {
+            const name = val('inName');
+            if(!name) return alert("İsim alanı zorunludur!");
+
+            const btn = document.querySelector('.save-action');
+            btn.innerText = "KAYDEDİLİYOR...";
+            btn.disabled = true;
+
+            // Verileri Paketle (Mevcut App Script yapısına uygun)
+            const folderStr = [
+                val('inWeb'), // Link 1 (Web)
+                "", // Link 2 (Boş)
+                "encrypted", // Hash
+                encodeSafe(val('inTitle')),
+                encodeSafe(val('inPhone')),
+                encodeSafe(val('inWhats')),
+                encodeSafe(val('inInsta')),
+                "", // Adres (Boş)
+                encodeSafe(val('inMap')),
+                encodeSafe(val('inImg')),
+                "", "", "", "", "" // Diğerleri boş
+            ].join("|||");
+
+            fetch(API_URL + `?action=save&id=${currentID}&title=${encodeURIComponent(name)}&not=&folder=${encodeURIComponent(folderStr)}&ses=`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    // Bu cihazı admin olarak işaretle
+                    localStorage.setItem('admin_' + currentID, "true");
+                    alert("Bilgiler başarıyla kaydedildi!");
+                    location.reload();
+                } else {
+                    alert("Kaydetme başarısız.");
+                    btn.disabled = false;
+                    btn.innerText = "KAYDET VE YAYINLA";
+                }
+            });
+        }
+
+        function openEdit() {
+            document.getElementById('editPanel').style.display = 'block';
+            // Mevcut verileri forma doldur
+            document.getElementById('inName').value = cardData.name || "";
+            document.getElementById('inTitle').value = cardData.title || "";
+            document.getElementById('inPhone').value = cardData.phone || "";
+            document.getElementById('inWhats').value = cardData.whats || "";
+            document.getElementById('inInsta').value = cardData.insta || "";
+            document.getElementById('inImg').value = cardData.img || "";
+            document.getElementById('inMap').value = cardData.map || "";
+            document.getElementById('inWeb').value = cardData.web || "";
+        }
+
+        function closeEdit() {
+            document.getElementById('editPanel').style.display = 'none';
+        }
+
+        function downloadVCard() {
+            const vcard = [
+                "BEGIN:VCARD", "VERSION:3.0",
+                `FN;CHARSET=UTF-8:${cardData.name}`,
+                `TITLE;CHARSET=UTF-8:${cardData.title}`,
+                `TEL;TYPE=CELL:${cardData.phone}`,
+                `URL:${window.location.href}`,
+                cardData.email ? `EMAIL:${cardData.email}` : "",
+                cardData.insta ? `X-SOCIALPROFILE;TYPE=instagram:https://instagram.com/${cardData.insta.replace('@','')}` : "",
+                "END:VCARD"
+            ].join("\n");
+
+            const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = (cardData.name || "kartvizit") + ".vcf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        /* Yardımcı Fonksiyonlar */
+        function val(id) { return document.getElementById(id).value; }
+        function toggleBtn(id, val) { document.getElementById(id).style.display = (val && val.length > 1) ? 'flex' : 'none'; }
+        function encodeSafe(s) { return encodeURIComponent((s || "").trim()); }
+        function decodeSafe(s) { try { return decodeURIComponent(s); } catch(e){ return s; } }
+        function normalizeTel(t) { return (t||"").replace(/[^\d]/g,'').replace(/^0/,'90'); }
+
+    </script>
+</body>
+</html>
